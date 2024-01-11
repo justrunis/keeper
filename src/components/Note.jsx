@@ -8,12 +8,16 @@ function Note(props) {
   }
 
   return (
-    <div className="note">
+    <div className="note" style={{ 
+      backgroundColor: props.color, 
+      border: `5px solid white`,  // Use fadedColor for the border color
+    }}>
       <h1>{props.title}</h1>
       <p>{props.content}</p>
-      <button onClick={handleClick}><DeleteIcon /></button>
+      <button className="btn" onClick={handleClick}><DeleteIcon /></button>
     </div>
   );
 }
+
 
 export default Note;

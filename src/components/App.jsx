@@ -1,38 +1,22 @@
-import React, {useState} from "react";
-import Header from "./Header";
-import Footer from "./Footer";
-import Note from "./Note";
-import CreateArea from "./CreateArea";
+import React, { useState } from "react";
+import Login from "./Login";
+import Home from "./Home";
+import Register from "./Register";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 function App() {
-
-  const [notes, setNotes] = useState([]);
-
-  function addNote(newNote) {
-    if (newNote.title !== "" && newNote.content !== "") {
-      setNotes(prevNotes => {
-        return [...prevNotes, newNote];
-      });
-    }
-  }
-
-  function deleteNote(id){
-    setNotes(prevNotes => {
-      return prevNotes.filter((noteItem, index) => {
-        return index !== id;
-      });
-    });
-  }
+  
+  const [loggedIn, setLoggedIn] = useState(false)
+  const [email, setEmail] = useState("")
 
   return (
-    <div>
-      <Header />
-      <CreateArea onAdd={addNote}/>
-      {notes.map((note, index) => {
-        return <Note key={index} id={index} title={note.title} content={note.content} onDelete={deleteNote}/>
-      })}
-      <Footer />
-    </div>
+    <BrowserRouter>
+    <Routes>
+      <Route path="/" element={<Login setLoggedIn={setLoggedIn} setEmail={setEmail} />} />
+      <Route path="/home" element={<Home email={email} loggedIn={loggedIn} setLoggedIn={setLoggedIn}/>} />
+      <Route path="/register" element={<Register setLoggedIn={setLoggedIn} setEmail={setEmail}/>} />
+    </Routes>
+  </BrowserRouter>
   );
 }
 

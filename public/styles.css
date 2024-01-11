@@ -1,3 +1,7 @@
+:root{
+  --main-color: #f5ba13;
+}
+
 * {
   padding: 0;
   margin: 0;
@@ -12,17 +16,11 @@ body {
   background-image: url("https://www.transparenttextures.com/patterns/gplay.png");
 }
 
-header {
-  background-color: #f5ba13;
+.header {
+  background-color: var(--main-color);
   margin: auto -16px;
   padding: 16px 32px;
   box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.3);
-}
-
-header h1 {
-  color: #fff;
-  font-family: "McLaren", cursive;
-  font-weight: 200;
 }
 
 footer {
@@ -31,13 +29,20 @@ footer {
   bottom: 0;
   width: 100%;
   height: 2.5rem;
+  background-color: var(--main-color);
+  margin: auto -16px;
+  padding: 16px 32px;
+  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 footer p {
-  color: #ccc;
+  color: black;
 }
 .note {
-  background: #fff;
+  background: var(--main-color);
   border-radius: 7px;
   box-shadow: 0 2px 5px #ccc;
   padding: 10px;
@@ -45,11 +50,13 @@ footer p {
   margin: 16px;
   float: left;
 }
+  
 .note h1 {
   font-size: 1.1em;
   margin-bottom: 6px;
 }
-.note p {
+.note p
+.note-color-container p {
   font-size: 1.1em;
   margin-bottom: 10px;
   white-space: pre-wrap;
@@ -60,12 +67,30 @@ footer p {
   position: relative;
   float: right;
   margin-right: 10px;
-  color: #f5ba13;
+  color: var(--main-color);
   border: none;
   width: 36px;
   height: 36px;
   cursor: pointer;
   outline: none;
+}
+
+.color-select{
+  width: 100%;
+  padding: 4px;
+  font-size: 1.2em;
+  font-family: inherit;
+  border: none;
+  outline: none;
+  background-color: var(--main-color);
+  border-radius: 7px;
+  box-shadow: 0 1px 5px rgb(138, 137, 137);
+}
+
+.color-select option{
+  color: black;
+  font-weight:500;
+  
 }
 
 form.create-note {
@@ -91,7 +116,7 @@ form.create-note button {
   position: absolute;
   right: 18px;
   bottom: -18px;
-  background: #f5ba13;
+  background: var(--main-color);
   color: #fff;
   border: none;
   border-radius: 50%;
@@ -100,4 +125,80 @@ form.create-note button {
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
   cursor: pointer;
   outline: none;
+}
+
+/* FORM CSS */
+.mainContainer {
+  flex-direction: column;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 50vh;
+}
+
+.titleContainer {
+  display: flex;
+  flex-direction: column;
+  font-size: 64px;
+  font-weight: bolder;
+  align-items: center;
+  justify-content: center;
+}
+
+.resultContainer, .historyItem { 
+  flex-direction: row;
+  display: flex;
+  width: 400px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.historyContainer {
+  flex-direction: column;
+  display: flex;
+  height: 200px;
+  align-items: center;
+  flex-grow: 5;
+  justify-content: flex-start;
+}
+
+.buttonContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 260px;
+}
+
+.inputContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+.inputContainer > .errorLabel {
+  color: red;
+  font-size: 12px;
+}
+
+.inputBox {
+  height: 48px;
+  width: 400px;
+  font-size: large;
+  border-radius: 8px;
+  border: 1px solid grey;
+  padding-left: 8px;
+}
+
+.inputButton{
+  height: 48px;
+  width: 400px;
+  font-size: large;
+  border-radius: 8px;
+  border: 1px solid grey;
+  background-color: var(--main-color);
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
 }
