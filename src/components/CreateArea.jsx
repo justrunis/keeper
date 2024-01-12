@@ -7,6 +7,11 @@ import ColorSelect from "./ColorSelect";
 function CreateArea(props) {
   const [note, setNote] = useState({ title: "", content: "", color: "" });
   const [isExpanded, setIsExpanded] = useState(false);
+  
+  const [formErrors, setFormErrors] = useState({
+    titleError: "",
+    noteError: ""
+});
 
   function handleChange(event) {
     const { name, value } = event.target;
@@ -19,11 +24,40 @@ function CreateArea(props) {
   }
 
   function submitNote(event) {
+
+    setFormErrors({
+      emailError: "",
+      passwordError: "",
+      usernameError: ""
+  });
+
+    if (note.title === "") {
+      setFormErrors((prevErrors) => ({
+        ...prevErrors,
+        titleError: "Please enter a title",
+      }));
+      event.preventDefault();
+      return;
+    }
+
+    if (note.content === "") {
+      setFormErrors((prevErrors) => ({
+        ...prevErrors,
+        noteError: "Please enter some content",
+      }));
+      event.preventDefault();
+      return;
+    }
+
     props.onAdd(note);
     setNote({
       title: "",
       content: "",
       color: "",
+    });
+    setFormErrors({
+      titleError: "",
+      noteError: "",
     });
     event.preventDefault();
   }
@@ -52,6 +86,7 @@ function CreateArea(props) {
             onChange={handleChange}
           />
         )}
+        <label className="errorLabel">{formErrors.titleError}</label>
 
         <textarea
           name="content"
@@ -61,6 +96,7 @@ function CreateArea(props) {
           onClick={handleContentClick}
           onChange={handleChange}
         />
+        <label className="errorLabel">{formErrors.noteError}</label>
         {isExpanded && (
           <div className="note-color-container">
             <ColorSelect onColorChange={handleColorChange}/>

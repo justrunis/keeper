@@ -1,5 +1,4 @@
 import React ,{useState} from "react"
-import { useNavigate } from "react-router-dom";
 import Header from "./Header";
 import Footer from "./Footer";
 import Note from "./Note";
@@ -7,6 +6,8 @@ import CreateArea from "./CreateArea";
 
 function Home() {
     const [notes, setNotes] = useState([]);
+    const [needsEdit, setNeedsEdit] = useState(null); // Initialize with null
+
     function addNote(newNote) {
         if (newNote.title !== "" && newNote.content !== "") {
             setNotes((prevNotes) => {
@@ -23,7 +24,26 @@ function Home() {
         });
     }
 
-    const navigate = useNavigate();
+    function enableEdit(id) {
+        setNeedsEdit(id);
+    }
+
+    function editNote(id, title, content) {
+        setNotes((prevNotes) => {
+            return prevNotes.map((noteItem, index) => {
+                if (index === id) {
+                    return {
+                        title: title,
+                        content: content
+                    };
+                } else {
+                    return noteItem;
+                }
+            });
+        });
+        setNeedsEdit(null);
+    }
+
     return (
         <div>
             <Header />
@@ -36,7 +56,10 @@ function Home() {
                         title={note.title}
                         content={note.content}
                         color={note.color}
+                        needsEdit={needsEdit === index}
                         onDelete={deleteNote}
+                        onEdit={enableEdit}
+                        onSave={editNote}
                     />
                 );
             })}

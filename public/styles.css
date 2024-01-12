@@ -49,6 +49,7 @@ footer p {
   width: 240px;
   margin: 16px;
   float: left;
+  border: 5px solid white;
 }
   
 .note h1 {
@@ -112,7 +113,8 @@ form.create-note textarea {
   font-family: inherit;
   resize: none;
 }
-form.create-note button {
+form.create-note button,
+.edit-note button {
   position: absolute;
   right: 18px;
   bottom: -18px;
@@ -125,6 +127,26 @@ form.create-note button {
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
   cursor: pointer;
   outline: none;
+}
+
+.edit-note{
+  position: relative;
+  border: none;
+  outline: none;
+}
+.edit-note input{
+  font-weight: bold;
+}
+
+.edit-note input,
+.edit-note textarea{
+  width: 100%;
+  outline: none;
+  font-family: inherit;
+  resize: none;
+  position: relative;
+  background-color: transparent;
+  border: none;
 }
 
 /* FORM CSS */
@@ -177,7 +199,9 @@ form.create-note button {
   justify-content: center;
 }
 
-.inputContainer > .errorLabel {
+.inputContainer > .errorLabel,
+.create-note > .errorLabel,
+.edit-note > .errorLabel {
   color: red;
   font-size: 12px;
 }
