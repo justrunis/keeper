@@ -28,13 +28,14 @@ function Home() {
         setNeedsEdit(id);
     }
 
-    function editNote(id, title, content) {
+    function editNote(id, title, content, color) {
         setNotes((prevNotes) => {
             return prevNotes.map((noteItem, index) => {
                 if (index === id) {
                     return {
                         title: title,
-                        content: content
+                        content: content,
+                        color: color
                     };
                 } else {
                     return noteItem;

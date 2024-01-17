@@ -56,7 +56,6 @@ const Login = (props) => {
             <label className="errorLabel">{passwordError}</label>
           </div>
           <br />
-          <div className={"inputContainer"}>
             <div className={"inputContainer"}>
               <button className={"inputButton"} onClick={onButtonClick}>
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
@@ -64,7 +63,6 @@ const Login = (props) => {
                 </div>
               </button>
             </div>
-          </div>
         </div>
         <Footer />
       </div>

@@ -42,7 +42,7 @@ function Note(props) {
       return;
     }
 
-    props.onSave(props.id, editedTitle, editedContent);
+    props.onSave(props.id, editedTitle, editedContent, props.color);
   }
 
   return (
@@ -54,7 +54,7 @@ function Note(props) {
             {formErrors.titleError && <p className="errorLabel">{formErrors.titleError}</p>}
             <textarea className="inputContainer" value={editedContent} onChange={handleContentChange} />
             {formErrors.noteError && <p className="errorLabel">{formErrors.noteError}</p>}
-            <button style={{ color: "black" }} onClick={handleSaveClick}>
+            <button className="" style={{ color: "black" }} onClick={handleSaveClick}>
               <SaveIcon />
             </button>
           </div>
@@ -62,7 +62,7 @@ function Note(props) {
         
       ) : (
         <>
-          <h1>{props.title}</h1>
+            <h1 style={{ fontWeight: "bold" }}>{props.title}</h1>
           <p>{props.content}</p>
           <button className="btn" style={{ color: "black" }} onClick={handleDeleteClick}>
             <DeleteIcon />
