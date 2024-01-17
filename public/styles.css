@@ -155,7 +155,7 @@ form.create-note button,
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 50vh;
+  height: 80vh;
 }
 
 .titleContainer {
@@ -222,7 +222,7 @@ form.create-note button,
   border-radius: 8px;
   border: 1px solid grey;
   background-color: var(--main-color);
-  color: white;
+  color: black;
   font-weight: bold;
   cursor: pointer;
 }
@@ -237,7 +237,7 @@ form.create-note button,
   background-color: var(--main-color);
   border: 5px solid white;
   border-radius: 10px;
-  height: 70vh;
+  height: 80vh;
   width: 50%;
 }
 
