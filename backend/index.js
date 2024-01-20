@@ -15,21 +15,21 @@ const saltRounds = 10;
 
 // Change to your own database
 // Windows setup
-// const db = new Pool({
-//     user: "postgres",
-//     host: "localhost",
-//     database: "keeper",
-//     password: "dbpassword123",
-//     port: 5432,
-// });
-// Linux setup
 const db = new Pool({
-    user: "localhost",
+    user: "postgres",
     host: "localhost",
     database: "keeper",
     password: "dbpassword123",
-    port: 5433,
+    port: 5432,
 });
+// Linux setup
+// const db = new Pool({
+//     user: "localhost",
+//     host: "localhost",
+//     database: "keeper",
+//     password: "dbpassword123",
+//     port: 5433,
+// });
 
 app.use(express.static("public"));
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -104,8 +104,8 @@ const matchPassword = async (password, hashPassword) => {
 // Passport strategy for user registration
 passport.use("local-register", new LocalStrategy({ passReqToCallback: true }, async (req, email, password, done) => {
     try {
-        console.log(req.body);
         const { date_of_birth, gender, username } = req.body;
+        email = req.body.email
 
         // Check if the user already exists
         const isEmail = await emailExists(email);
@@ -195,10 +195,20 @@ app.post('/register', function(req, res, next) {
     passport.authenticate('local-register', function(err, email, info) {
       if (err) { return next(err); }
       if (!email) { 
-          return;
+        res.send(info.message);
+        return;
       }
+
     })(req, res, next);
-  });
+});
+
+// Logout route
+app.get("/logout",(req,res)=>{
+    res.clearCookie("connect.sid"); // Clear the cookies left on client-side
+    req.logOut(()=>{
+        res.redirect("/"); // Redirect to the home page after logout
+    });
+});
 
 app.get('/', (req, res) => {
     res.send('Hello, World!');
