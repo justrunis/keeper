@@ -4,7 +4,7 @@ function ColorSelect(props) {
     const [color, setColor] = useState('');
 
     const colors = [
-        { name: 'Yellow', value: '#f5ba13'},
+        { name: 'Default', value: ''},
         { name: 'Blue', value: '#4ca6d8' },
         { name: 'Green', value: '#3aa15e' },
         { name: 'Red', value: '#d84d42' },
