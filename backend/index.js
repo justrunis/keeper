@@ -15,21 +15,21 @@ const saltRounds = 10;
 
 // Change to your own database
 // Windows setup
-const db = new Pool({
-    user: "postgres",
-    host: "localhost",
-    database: "keeper",
-    password: "dbpassword123",
-    port: 5432,
-});
-// Linux setup
 // const db = new Pool({
-//     user: "localhost",
+//     user: "postgres",
 //     host: "localhost",
 //     database: "keeper",
 //     password: "dbpassword123",
-//     port: 5433,
+//     port: 5432,
 // });
+// Linux setup
+const db = new Pool({
+    user: "localhost",
+    host: "localhost",
+    database: "keeper",
+    password: "dbpassword123",
+    port: 5433,
+});
 
 app.use(express.static("public"));
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -130,6 +130,8 @@ passport.use("local-register", new LocalStrategy({ passReqToCallback: true }, as
 // Passport strategy for user login
 passport.use("local-login", new LocalStrategy(async (email, password, done) => {
     try {
+        console.log("email", email);
+        console.log("password", password);
         // Find the user in the database
         const user = await emailExists(email);
         const messageText = "Incorrect email or password";
@@ -191,16 +193,49 @@ let notes = [];
 
 // Registration form submission route
 app.post('/register', function(req, res, next) {
-    console.log(req.body);
     passport.authenticate('local-register', function(err, email, info) {
-      if (err) { return next(err); }
-      if (!email) { 
-        res.send(info.message);
-        return;
-      }
-
+        if (err) { return next(err); }
+        if (!email) { 
+            return res.status(400).json({ message: info.message });
+        }
+        res.json({ success: true, message: 'Registration successful' });
     })(req, res, next);
 });
+
+// Login form submission route
+// app.post('/login', function(req, res, next) {
+//     // Log user inputs
+//     console.log("User inputs:", req.body);
+
+//     passport.authenticate('local-login', function(err, user, info) {
+//         if (err) { return next(err); }
+//         if (!user) { 
+//             return res.status(401).json({ message: info.message });
+//         }
+//         // Authentication successful
+//         res.json({ success: true, message: 'Login successful', user: user });
+//     })(req, res, next);
+// });
+
+app.post('/login', function(req, res, next) {
+    console.log("User inputs:", req.body); // Log user inputs
+
+    passport.authenticate('local-login', function(err, user, info) {
+        console.log("User:", user); // Log user object
+        if (err) { return next(err); }
+        if (!user) { 
+            console.log("Authentication failed:", info.message); // Log authentication failure
+            return res.status(401).json({ message: info.message });
+        }
+        req.logIn(user, function(err) {
+            if (err) { return next(err); }
+            console.log("Login successful"); // Log login success
+            return res.status(200).json({ success: true, message: 'Login successful', user: user });
+        });
+    })(req, res, next);
+});
+
+
 
 // Logout route
 app.get("/logout",(req,res)=>{

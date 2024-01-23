@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from "react-router-dom";
 import Header from './Header';
 import Footer from './Footer';
+import { variables } from "../Variables.js";
 
 function Register(props) {
 
@@ -22,6 +23,8 @@ function Register(props) {
         date_of_birthError: "",
         genderError: ""
     });
+
+    const [displayError, setDisplayError] = useState("")
 
     function handleInputChange(e){
         setFormData({
@@ -75,16 +78,32 @@ function Register(props) {
             formData.gender !== "" &&
             formData.password === formData.repeatPassword
         ) {
-            fetch('http://localhost:4000/register', {
+            const URL = variables.API_URL + "register";
+            fetch(URL, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify(formData),
             })
-            props.setLoggedIn(true);
-            props.setEmail(formData.email);
-            navigate("/home");
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(error => {
+                        throw new Error(error.message);
+                    });
+                }
+                return response.json();
+            })
+            .then(data => {
+                props.setLoggedIn(true);
+                props.setEmail(formData.email);
+                navigate("/");
+            })
+            .catch(error => {
+                setDisplayError(error.message);
+                document.getElementsByClassName('alert alert-danger')[0].style.display = 'block';
+                console.error('Registration error:', error.message);
+            });
         }
     }
 
@@ -97,6 +116,7 @@ function Register(props) {
                 </div>
                 <br />
                 <div className={"flexContainer"}>
+                    <div className='alert alert-danger' style={{display: 'none'}}>{displayError}</div>
                     <div className={"inputContainer"}>
                         <label htmlFor="username">Username</label>
                         <input
