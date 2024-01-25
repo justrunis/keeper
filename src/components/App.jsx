@@ -7,17 +7,22 @@ import Profile from "./Profile";
 
 function App() {
   
-  const [loggedIn, setLoggedIn] = useState(false)
-  const [email, setEmail] = useState("")
+  const [loggedIn, setLoggedIn] = useState(false);
+  const [email, setEmail] = useState("");
+
+  const handleLogin = (loggedIn, email) => {
+    setLoggedIn(loggedIn);
+    setEmail(email);
+  };
 
   return (
     <BrowserRouter>
-    <Routes>
-      <Route path="/" element={<Login setLoggedIn={setLoggedIn} setEmail={setEmail} />} />
-      <Route path="/home" element={<Home email={email} loggedIn={loggedIn} setLoggedIn={setLoggedIn}/>} />
-      <Route path="/register" element={<Register setLoggedIn={setLoggedIn} setEmail={setEmail}/>} />
-      <Route path="/Profile" element={<Profile email={email} loggedIn={loggedIn} setLoggedIn={setLoggedIn}/>} />
-    </Routes>
+      <Routes>
+        <Route path="/" element={<Login handleLogin={handleLogin} />} />
+        <Route path="/home" element={<Home email={email} loggedIn={loggedIn} />} />
+        <Route path="/register" element={<Register handleLogin={handleLogin} />} />
+        <Route path="/profile" element={<Profile email={email} loggedIn={loggedIn} />} />
+      </Routes>
   </BrowserRouter>
   );
 }

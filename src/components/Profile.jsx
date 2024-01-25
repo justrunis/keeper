@@ -1,11 +1,19 @@
 import React, { useState } from 'react';
+import { useNavigate } from "react-router-dom";
 import Header from './Header';
 import Footer from './Footer';
 import Avatar from './Avatar';
 import EditIcon from '@mui/icons-material/Edit';
 import SaveIcon from '@mui/icons-material/Save';
 
-const Profile = () => {
+const Profile = (props) => {
+    const navigate = useNavigate();
+
+    if(!props.loggedIn) {
+        navigate('/');
+    }
+
+
     const [isEditing, setIsEditing] = useState(false);
     const [profile, setProfile] = useState({ 
     name: 'John Doe', 

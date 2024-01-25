@@ -1,5 +1,5 @@
 :root{
-  --main-color: #1abc9c;
+  --main-color: #FFD966;
 }
 
 * {
@@ -78,7 +78,6 @@ footer p {
 
 .color-select{
   width: 100%;
-  padding: 4px;
   font-size: 1.2em;
   font-family: inherit;
   border: none;
@@ -197,6 +196,7 @@ form.create-note button,
   flex-direction: column;
   align-items: flex-start;
   justify-content: center;
+  margin-top: 10px;
 }
 
 .inputContainer > .errorLabel,

@@ -13,7 +13,10 @@ function Note(props) {
   });
 
   function handleDeleteClick() {
-    props.onDelete(props.id);
+    const isConfirmed = window.confirm("Are you sure you want to delete this note?");
+    if (isConfirmed) {
+      props.onDelete(props.id);
+    }
   }
 
   function handleEditClick() {

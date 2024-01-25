@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import Header from './Header';
 import Footer from './Footer';
 import { variables } from "../Variables.js";
@@ -24,7 +24,8 @@ function Register(props) {
         genderError: ""
     });
 
-    const [displayError, setDisplayError] = useState("")
+    const [displayError, setDisplayError] = useState("");
+    const [isLoading, setIsLoading] = useState(false);
 
     function handleInputChange(e){
         setFormData({
@@ -45,6 +46,7 @@ function Register(props) {
             date_of_birthError: "",
             genderError: "" 
         };
+        let isValid = true;
 
         if (formData.email === "") {
             newFormErrors.emailError = "Email cannot be empty";
@@ -67,6 +69,10 @@ function Register(props) {
         if (formData.password !== formData.repeatPassword) {
             newFormErrors.passwordError = "Passwords do not match";
         }
+        if(formData.email !== "" && !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(formData.email)) {
+            newFormErrors.emailError = "Invalid email address";
+            isValid = false;
+        }
 
         setFormErrors(newFormErrors);
 
@@ -76,9 +82,10 @@ function Register(props) {
             formData.username !== "" &&
             formData.date_of_birth !== "" &&
             formData.gender !== "" &&
-            formData.password === formData.repeatPassword
+            isValid
         ) {
             const URL = variables.API_URL + "register";
+            setIsLoading(true);
             fetch(URL, {
                 method: 'POST',
                 headers: {
@@ -89,17 +96,18 @@ function Register(props) {
             .then(response => {
                 if (!response.ok) {
                     return response.json().then(error => {
+                        setIsLoading(false);
                         throw new Error(error.message);
                     });
                 }
                 return response.json();
             })
             .then(data => {
-                props.setLoggedIn(true);
-                props.setEmail(formData.email);
+                props.handleLogin(true, formData.email);
                 navigate("/");
             })
             .catch(error => {
+                setIsLoading(false);
                 setDisplayError(error.message);
                 document.getElementsByClassName('alert alert-danger')[0].style.display = 'block';
                 console.error('Registration error:', error.message);
@@ -114,7 +122,6 @@ function Register(props) {
                 <div className={"titleContainer"}>
                     <div>Register</div>
                 </div>
-                <br />
                 <div className={"flexContainer"}>
                     <div className='alert alert-danger' style={{display: 'none'}}>{displayError}</div>
                     <div className={"inputContainer"}>
@@ -196,12 +203,19 @@ function Register(props) {
                 </div>
                 <br />
                 <div className={"inputContainer"}>
-                    <input
+
+                    <button
                         className={"inputButton"}
                         type="button"
                         onClick={onButtonClick}
-                        value={"Register"}
-                    />
+                        disabled={isLoading}>
+                        {isLoading ? <span>Loading</span> : <span>Register</span>}
+                    </button>
+                </div>
+                <div className={"inputContainer"}>
+                    <p className={"mt-3"}>
+                    Already have an account? <Link to="/">Log in</Link>
+                    </p>
                 </div>
             </div>
             <Footer />

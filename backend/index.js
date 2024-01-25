@@ -15,21 +15,21 @@ const saltRounds = 10;
 
 // Change to your own database
 // Windows setup
-// const db = new Pool({
-//     user: "postgres",
-//     host: "localhost",
-//     database: "keeper",
-//     password: "dbpassword123",
-//     port: 5432,
-// });
-// Linux setup
 const db = new Pool({
-    user: "localhost",
+    user: "postgres",
     host: "localhost",
     database: "keeper",
     password: "dbpassword123",
-    port: 5433,
+    port: 5432,
 });
+// Linux setup
+// const db = new Pool({
+//     user: "localhost",
+//     host: "localhost",
+//     database: "keeper",
+//     password: "dbpassword123",
+//     port: 5433,
+// });
 
 app.use(express.static("public"));
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -100,6 +100,12 @@ const matchPassword = async (password, hashPassword) => {
     const match = await bcrypt.compare(password, hashPassword);
     return match
 };
+
+async function getUserId(email) {
+    const data = await query("SELECT * FROM users WHERE email=$1", [email]);
+    if (data.rowCount == 0) return false;
+    return data.rows[0].id;
+}
  
 // Passport strategy for user registration
 passport.use("local-register", new LocalStrategy({ passReqToCallback: true }, async (req, email, password, done) => {
@@ -202,21 +208,6 @@ app.post('/register', function(req, res, next) {
     })(req, res, next);
 });
 
-// Login form submission route
-// app.post('/login', function(req, res, next) {
-//     // Log user inputs
-//     console.log("User inputs:", req.body);
-
-//     passport.authenticate('local-login', function(err, user, info) {
-//         if (err) { return next(err); }
-//         if (!user) { 
-//             return res.status(401).json({ message: info.message });
-//         }
-//         // Authentication successful
-//         res.json({ success: true, message: 'Login successful', user: user });
-//     })(req, res, next);
-// });
-
 app.post('/login', function(req, res, next) {
     console.log("User inputs:", req.body); // Log user inputs
 
@@ -241,24 +232,45 @@ app.post('/login', function(req, res, next) {
 app.get("/logout",(req,res)=>{
     res.clearCookie("connect.sid"); // Clear the cookies left on client-side
     req.logOut(()=>{
-        res.redirect("/"); // Redirect to the home page after logout
+        res.redirect("/"); // Redirect to the login page after logout
     });
 });
 
-app.get('/', (req, res) => {
-    res.send('Hello, World!');
+// Get notes
+app.post('/getNotes/:email', async (req, res) => {
+    const email = req.params.email;
+    const userId = await getUserId(email);
+    if(userId === false) {
+        res.status(400).json({ message: "User has no notes" });
+        console.log("User has no notes");
+        return;
+    }
+    const data = await query("SELECT * FROM notes WHERE user_id=$1", [userId]);
+    if (data.rowCount == 0) return false;
+    res.json(data.rows);
+    return data.rows[0];
 });
 
-app.post('/addNote', (req, res) => {
-    const note = req.body;
-    notes.push(note);
-    console.log(note);
+// Add note
+app.post('/addNote', async (req, res) => {
+    console.log("req.body", req.body);
+    let userId = await getUserId(req.body.email);
+    console.log("userId", userId);  
+    if(userId === false) {
+        return;
+    }
+    const data = await query("INSERT INTO notes(user_id, title, content, color) VALUES ($1, $2, $3, $4) RETURNING id, user_id, title, content, color", [userId, req.body.title, req.body.content, req.body.color]);
+    if (data.rowCount == 0) return false;
+    res.json(data.rows[0].id);
+    return data.rows[0];
 });
 
-app.post('/deleteNote', (req, res) => {
-    const note = req.body;
-    notes = notes.filter((note) => note.id !== note.id);
-    console.log(note);
+// Delete note
+app.delete('/deleteNote/:id', async (req, res) => {
+    console.log("WANT TO DELETE", req.params.id);
+    const noteID = req.params.id;
+    await query("DELETE FROM notes WHERE id=$1", [noteID]);
+    res.status(204).send();
 });
 
 app.post('/editNote', (req, res) => {

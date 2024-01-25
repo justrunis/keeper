@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import Header from "./Header";
 import Footer from "./Footer";
 import LoginIcon from '@mui/icons-material/Login';
@@ -22,16 +22,21 @@ const Login = (props) => {
     const onButtonClick = () => {
         setEmailError("")
         setPasswordError("")
+        let isValid = true;
         if (email === "") {
             setEmailError("Email cannot be empty")
+            isValid = false;
         }
         if (password === "") {
             setPasswordError("Password cannot be empty")
+            isValid = false;
         }
-        if (email !== "" && password !== "") {
+        if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(email)) {
+          setEmailError("Invalid email address");
+          isValid = false;
+        }
+        if (isValid) {
             const URL = variables.API_URL + "login"
-            console.log(URL);
-            console.log("email: " + email + " password: " + password);
             setIsLoading(true);
             fetch(URL, {
                 method: "POST",
@@ -52,9 +57,8 @@ const Login = (props) => {
               }
           })
           .then(data => {
-              props.setLoggedIn(true);
-              props.setEmail(email);
-              navigate("/profile");
+              props.handleLogin(true, email);
+              navigate("/home");
           })
           .catch(error => {
               setIsLoading(false);
@@ -70,19 +74,20 @@ const Login = (props) => {
 
     return (
       <div>
-      <Header />
+        <Header />
         <div className={"mainContainer"}>
           <div className={"titleContainer"}>
             <div>Login</div>
           </div>
-          <br />
-          <div className={'flexContainer'}>
-            <div className='alert alert-danger' style={{display: 'none'}}>{displayError}</div>
+          <div className={"flexContainer"}>
+            <div className="alert alert-danger" style={{ display: "none" }}>
+              {displayError}
+            </div>
             <div className={"inputContainer"}>
-              <label htmlFor="username">Username</label>
+              <label htmlFor="username">Email</label>
               <input
                 value={email}
-                placeholder="Enter your username here"
+                placeholder="Enter your email here"
                 onChange={(ev) => setEmail(ev.target.value)}
                 className={"inputBox"}
                 type="email"
@@ -90,7 +95,6 @@ const Login = (props) => {
               />
               <label className="errorLabel">{emailError}</label>
             </div>
-            <br />
             <div className={"inputContainer"}>
               <label htmlFor="password">Password</label>
               <input
@@ -105,13 +109,22 @@ const Login = (props) => {
             </div>
           </div>
           <br />
-            <div className={"inputContainer"}>
-              <button className={"inputButton"} onClick={onButtonClick} disabled={isLoading}>
-                <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
-                  {isLoading ? <span>Loading... <CachedIcon /></span> : <span>Log in <LoginIcon style={{ marginLeft: "5px" }}/></span> }
-                </div>
-              </button>
-            </div>
+          <div className={"inputContainer"}>
+            <button
+              className={"inputButton"}
+              onClick={onButtonClick}
+              disabled={isLoading}
+            >
+              <div>
+                {isLoading ? <span>Loading... <CachedIcon /></span> : <span>Log in <LoginIcon style={{ marginLeft: "5px" }} /></span>}
+              </div>
+            </button>
+          </div>
+          <div className={"inputContainer"}>
+            <p className={"mt-3"}>
+              Dont have an account? <Link to="/register">Register</Link>
+            </p>
+          </div>
         </div>
         <Footer />
       </div>
