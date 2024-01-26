@@ -1,6 +1,6 @@
 # Keeper
 
-![Alt Text](public/keeper-high-resolution-logo-transparent.png){:height="50%" width="50%"}
+![Keeper Logo](public/keeper-high-resolution-logo-transparent.png)
 
 ## Description
 The Keeper app is a simple note taking application built with React and ExpressJS. It allows users to create, edit, and delete notes, helping them stay organized and keep track of important information. More features to come in the future.
