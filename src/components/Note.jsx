@@ -57,6 +57,7 @@ function Note(props) {
             {formErrors.titleError && <p className="errorLabel">{formErrors.titleError}</p>}
             <textarea className="inputContainer" value={editedContent} onChange={handleContentChange} />
             {formErrors.noteError && <p className="errorLabel">{formErrors.noteError}</p>}
+            
             <button className="" style={{ color: "black" }} onClick={handleSaveClick}>
               <SaveIcon />
             </button>

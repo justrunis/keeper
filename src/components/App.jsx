@@ -16,13 +16,13 @@ function App() {
   };
 
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Login handleLogin={handleLogin} />} />
-        <Route path="/home" element={<Home email={email} loggedIn={loggedIn} />} />
-        <Route path="/register" element={<Register handleLogin={handleLogin} />} />
-        <Route path="/profile" element={<Profile email={email} loggedIn={loggedIn} />} />
-      </Routes>
+  <BrowserRouter>
+    <Routes>
+      <Route path="/" element={<Login handleLogin={handleLogin} />} />
+      <Route path="/home" element={<Home email={email} loggedIn={loggedIn} />} />
+      <Route path="/register" element={<Register handleLogin={handleLogin} />} />
+      <Route path="/profile" element={<Profile email={email} loggedIn={loggedIn} />} />
+    </Routes>
   </BrowserRouter>
   );
 }

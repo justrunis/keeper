@@ -136,8 +136,6 @@ passport.use("local-register", new LocalStrategy({ passReqToCallback: true }, as
 // Passport strategy for user login
 passport.use("local-login", new LocalStrategy(async (email, password, done) => {
     try {
-        console.log("email", email);
-        console.log("password", password);
         // Find the user in the database
         const user = await emailExists(email);
         const messageText = "Incorrect email or password";
@@ -195,8 +193,6 @@ async function query(sql, params) {
     }
 }
 
-let notes = [];
-
 // Registration form submission route
 app.post('/register', function(req, res, next) {
     passport.authenticate('local-register', function(err, email, info) {
@@ -208,11 +204,10 @@ app.post('/register', function(req, res, next) {
     })(req, res, next);
 });
 
+// Login form submission route
 app.post('/login', function(req, res, next) {
-    console.log("User inputs:", req.body); // Log user inputs
 
     passport.authenticate('local-login', function(err, user, info) {
-        console.log("User:", user); // Log user object
         if (err) { return next(err); }
         if (!user) { 
             console.log("Authentication failed:", info.message); // Log authentication failure
@@ -226,8 +221,6 @@ app.post('/login', function(req, res, next) {
     })(req, res, next);
 });
 
-
-
 // Logout route
 app.get("/logout",(req,res)=>{
     res.clearCookie("connect.sid"); // Clear the cookies left on client-side
@@ -237,7 +230,7 @@ app.get("/logout",(req,res)=>{
 });
 
 // Get notes
-app.post('/getNotes/:email', async (req, res) => {
+app.get('/getNotes/:email', async (req, res) => {
     const email = req.params.email;
     const userId = await getUserId(email);
     if(userId === false) {
@@ -253,9 +246,7 @@ app.post('/getNotes/:email', async (req, res) => {
 
 // Add note
 app.post('/addNote', async (req, res) => {
-    console.log("req.body", req.body);
     let userId = await getUserId(req.body.email);
-    console.log("userId", userId);  
     if(userId === false) {
         return;
     }
@@ -267,21 +258,21 @@ app.post('/addNote', async (req, res) => {
 
 // Delete note
 app.delete('/deleteNote/:id', async (req, res) => {
-    console.log("WANT TO DELETE", req.params.id);
     const noteID = req.params.id;
     await query("DELETE FROM notes WHERE id=$1", [noteID]);
     res.status(204).send();
 });
 
-app.post('/editNote', (req, res) => {
-    const note = req.body;
-    notes = notes.map((note) => (note.id === note.id ? note : note));
-    console.log(note);
+// Edit note
+app.patch('/editNote/:id', async (req, res) => {
+    const noteID = req.params.id;
+    const data = await query("UPDATE notes SET title=$1, content=$2, color=$3 WHERE id=$4 RETURNING id, title, content, color", [req.body.title, req.body.content, req.body.color, noteID]);
+    if (data.rowCount == 0) return false;
+    res.json(data.rows[0]);
+    return data.rows[0];
 });
 
-
-
-
+// Start the server
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
 });

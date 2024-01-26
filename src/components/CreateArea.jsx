@@ -1,17 +1,34 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import AddIcon from "@mui/icons-material/Add";
 import Fab from "@mui/material/Fab";
 import Zoom from "@mui/material/Zoom";
 import ColorSelect from "./ColorSelect";
+import { variables } from "../Variables";
 
 function CreateArea(props) {
   const [note, setNote] = useState({ title: "", content: "", color: "" });
   const [isExpanded, setIsExpanded] = useState(false);
-  
+
   const [formErrors, setFormErrors] = useState({
     titleError: "",
-    noteError: ""
-});
+    noteError: "",
+  });
+
+  const [isLoading, setIsLoading] = useState(false);
+
+  const createAreaRef = useRef(null);
+
+  useEffect(() => {
+    const handleOutsideClick = (event) => {
+      if (createAreaRef.current && !createAreaRef.current.contains(event.target)) {
+        setIsExpanded(false);
+      }
+    };
+    document.addEventListener("click", handleOutsideClick);
+    return () => {
+      document.removeEventListener("click", handleOutsideClick);
+    };
+  }, []);
 
   function handleChange(event) {
     const { name, value } = event.target;
@@ -24,12 +41,11 @@ function CreateArea(props) {
   }
 
   function submitNote(event) {
-
     setFormErrors({
       emailError: "",
       passwordError: "",
-      usernameError: ""
-  });
+      usernameError: "",
+    });
 
     if (note.title === "") {
       setFormErrors((prevErrors) => ({
@@ -38,6 +54,10 @@ function CreateArea(props) {
       }));
       event.preventDefault();
       return;
+    }
+
+    if (note.color === "") {
+      note.color = variables.MAIN_COLOR;
     }
 
     if (note.content === "") {
@@ -76,7 +96,7 @@ function CreateArea(props) {
   }
 
   return (
-    <div>
+    <div ref={createAreaRef}>
       <form className="create-note">
         {isExpanded && (
           <input
@@ -99,11 +119,11 @@ function CreateArea(props) {
         <label className="errorLabel">{formErrors.noteError}</label>
         {isExpanded && (
           <div className="note-color-container">
-            <ColorSelect onColorChange={handleColorChange}/>
+            <ColorSelect onColorChange={handleColorChange} />
           </div>
         )}
         <Zoom in={isExpanded}>
-          <Fab onClick={submitNote}>
+          <Fab onClick={submitNote} disabled={isLoading}>
             <AddIcon />
           </Fab>
         </Zoom>

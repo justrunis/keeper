@@ -1,55 +1,52 @@
-import React ,{useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import Header from "./Header";
 import Footer from "./Footer";
 import Note from "./Note";
 import CreateArea from "./CreateArea";
 import { variables } from "../Variables";
 import { useNavigate } from "react-router-dom";
-import { makeDeleteRequest, makePostRequest } from "../DatabaseRequests.js";
+import {makeGetRequest, makeDeleteRequest, makePostRequest, makePatchRequest } from "../DatabaseRequests.js";
 
 function Home(props) {
     const [notes, setNotes] = useState([]);
     const [needsEdit, setNeedsEdit] = useState(null);
 
+    const email = localStorage.getItem("email") || props.email;
+    const loggedIn = localStorage.getItem("loggedIn") === "true" || props.loggedIn;
+
+    localStorage.setItem("email", email);
+    localStorage.setItem("loggedIn", loggedIn ? "true" : "false");
+
     const navigate = useNavigate();
 
-    function getNotes(){
-        const URL = variables.API_URL + "getNotes/" + props.email;
-        fetch(URL, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({ email: props.email })
-        }).then(response => {
-            if (response.status >= 200 && response.status < 300) {
-                return response.json();
-            }
-        }).then(data => {
+    async function getNotes() {
+        const URL = variables.API_URL + "getNotes/" + email;
+        await makeGetRequest(URL).then((data) => {
             setNotes(data);
+            return data;
         });
     }
 
     // Get notes from database
     useEffect(() => {
-        if (props.loggedIn) {
-            getNotes();
-        } else {
+        if (!loggedIn) {
             navigate("/");
+        } else {
+            getNotes();
         }
-    }, [props.loggedIn, props.email]);
+    }, [loggedIn, email, navigate]);
 
     async function addNote(newNote) {
-        newNote.email = props.email;
-        
+        newNote.email = email;
+
         const URL = variables.API_URL + "addNote";
-        
+
         if (newNote.title !== "" && newNote.content !== "" && newNote.color !== "") {
             try {
                 let id = await makePostRequest(URL, newNote);
                 console.log("id", id);
                 newNote.id = id;
-                
+
                 setNotes((prevNotes) => {
                     return [...prevNotes, newNote];
                 });
@@ -64,7 +61,7 @@ function Home(props) {
         const URL = variables.API_URL + "deleteNote/" + id;
         try {
             await makeDeleteRequest(URL);
-            
+
             setNotes((prevNotes) => {
                 const updatedNotes = prevNotes.filter((noteItem) => {
                     return noteItem.id !== id;
@@ -75,22 +72,23 @@ function Home(props) {
             console.error('Error deleting note:', error);
         }
     }
-    
 
     function enableEdit(id) {
-        console.log("id", id);
         setNeedsEdit(id);
     }
 
-    function editNote(id, title, content, color) {
-        makePostRequest('http://localhost:4000/editNote', {id: id, title: title, content: content, color: color});
+    async function editNote(id, title, content, color) {
+        const URL = variables.API_URL + "editNote/" + id;
+        const updatedNote = await makePatchRequest(URL, { id: id, title: title, content: content, color: color });
+
         setNotes((prevNotes) => {
-            return prevNotes.map((noteItem, index) => {
-                if (index === id) {
+            return prevNotes.map((noteItem) => {
+                if (noteItem.id === id) {
                     return {
-                        title: title,
-                        content: content,
-                        color: color
+                        ...noteItem,
+                        title: updatedNote.title,
+                        content: updatedNote.content,
+                        color: updatedNote.color
                     };
                 } else {
                     return noteItem;
@@ -102,7 +100,7 @@ function Home(props) {
 
     return (
         <div>
-            <Header />
+            <Header loggedIn={loggedIn} />
             <CreateArea onAdd={addNote} />
             {notes.map((note, index) => {
                 return (
