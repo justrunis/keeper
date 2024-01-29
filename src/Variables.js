@@ -9,4 +9,9 @@ export const variables={
         { name: 'Purple', value: '#8b5e9e' },
         { name: 'Gray', value: '#eee' },
     ],
+    CATEGORIES: [ // Make sure the values match the backend and are the same words
+        {name: 'Todo', value: 'todo', color: '#ffd966'},
+        {name: 'Doing', value: 'doing', color: '#4ca6d8'},
+        {name: 'Done', value: 'done', color: '#3aa15e'},
+    ]
 }

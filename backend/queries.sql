@@ -20,3 +20,6 @@ CREATE TABLE notes (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users (id)
 );
+
+ALTER TABLE notes
+    ADD category VARCHAR(255) NULL;

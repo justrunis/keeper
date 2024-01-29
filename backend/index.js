@@ -250,7 +250,7 @@ app.post('/addNote', async (req, res) => {
     if(userId === false) {
         return;
     }
-    const data = await query("INSERT INTO notes(user_id, title, content, color, created_at, updated_at) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id, user_id, title, content, color", [userId, req.body.title, req.body.content, req.body.color, new Date(), new Date()]);
+    const data = await query("INSERT INTO notes(user_id, title, content, color, created_at, updated_at, category) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id, user_id, title, content, color, category", [userId, req.body.title, req.body.content, req.body.color, new Date(), new Date(), req.body.category]);
     if (data.rowCount == 0) return false;
     res.json(data.rows[0].id);
     return data.rows[0];
