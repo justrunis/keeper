@@ -3,6 +3,8 @@ import HighlightIcon from '@mui/icons-material/Highlight';
 import { useNavigate } from "react-router-dom";
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
+import MainIcon from "./MainIcon.jsx";
+
 
 function Header(props) {
   const navigate = useNavigate();
@@ -20,9 +22,7 @@ function Header(props) {
   return (
     <Navbar expand="lg" className="header">
         <Navbar.Brand href="/home">
-          <h1 onClick={handleClick} style={{ cursor: "pointer" }}>
-            <HighlightIcon />Keeper
-          </h1>
+            <MainIcon />
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">

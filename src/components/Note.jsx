@@ -2,14 +2,23 @@ import React, { useState } from "react";
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import SaveIcon from '@mui/icons-material/Save';
+import CancelIcon from '@mui/icons-material/Cancel';
+import ColorSelect from "./ColorSelect";
 
 function Note(props) {
-  
-  const [editedTitle, setEditedTitle] = useState(props.title);
-  const [editedContent, setEditedContent] = useState(props.content);
+
+  var selectedColor = props.color;
+
+  const [note, setNote] = useState({
+    title: props.title,
+    content: props.content,
+    color: selectedColor
+  });
+
   const [formErrors, setFormErrors] = useState({
     titleError: "",
-    noteError: "" 
+    noteError: "",
+    colorError: "",
   });
 
   function handleDeleteClick() {
@@ -24,61 +33,87 @@ function Note(props) {
   }
 
   function handleTitleChange(event) {
-    setEditedTitle(event.target.value);
+    setNote({ ...note, title: event.target.value });
     setFormErrors({ ...formErrors, titleError: "" });
   }
 
   function handleContentChange(event) {
-    setEditedContent(event.target.value);
+    setNote({ ...note, content: event.target.value });
     setFormErrors({ ...formErrors, noteError: "" });
+  }
+
+  function handleColorChange(color) {
+    console.log("selectedColor", color);
+    setNote({ ...note, color: color });
+    setFormErrors({ ...formErrors, colorError: "" });
+    selectedColor = color;
   }
 
   function handleSaveClick() {
     setFormErrors({ titleError: "", noteError: "" });
-    if (editedTitle.trim() === "") {
+    if (note.title.trim() === "") {
       setFormErrors({ ...formErrors, titleError: "Title is required" });
       return;
     }
 
-    if (editedContent.trim() === "") {
+    if (note.content.trim() === "") {
       setFormErrors({ ...formErrors, noteError: "Note content is required" });
       return;
     }
 
-    props.onSave(props.id, editedTitle, editedContent, props.color);
+    if (note.color.trim() === "") {
+      setFormErrors({ ...formErrors, colorError: "Color is required" });
+      return;
+    }
+
+    props.onSave(props.id, note.title, note.content, note.color);
+  }
+
+  function handleCancelClick() {
+    setNote({
+      title: props.title,
+      content: props.content,
+      color: selectedColor
+    });
+    props.onEdit(null);
   }
 
   return (
-    <div className="note" style={{ backgroundColor: props.color }}>
+    <div className="note" style={{ backgroundColor: note.color }} draggable={true}>
       {props.needsEdit ? (
         <>
           <div className="edit-note">
-            <input className="inputContainer" type="text" value={editedTitle} onChange={handleTitleChange} />
+            <input className="inputContainer" type="text" value={note.title} onChange={handleTitleChange} />
             {formErrors.titleError && <p className="errorLabel">{formErrors.titleError}</p>}
-            <textarea className="inputContainer" value={editedContent} onChange={handleContentChange} />
+            <textarea className="inputContainer" value={note.content} onChange={handleContentChange} />
             {formErrors.noteError && <p className="errorLabel">{formErrors.noteError}</p>}
+            <ColorSelect onColorChange={handleColorChange} noteColor={note.color} className="mb-5" />
+            {formErrors.colorError && <p className="errorLabel">{formErrors.colorError}</p>}
             
-            <button className="" style={{ color: "black" }} onClick={handleSaveClick}>
-              <SaveIcon />
-            </button>
+            <div className="button-container">
+              <button className="btn" style={{ color: "black" }} onClick={handleSaveClick}>
+                <SaveIcon />
+              </button>
+              <button className="btn" style={{ color: "black" }} onClick={handleCancelClick}>
+                <CancelIcon />
+              </button>
+            </div>
           </div>
         </>
-        
       ) : (
         <>
-            <h1 style={{ fontWeight: "bold" }}>{props.title}</h1>
-          <p>{props.content}</p>
-          <button className="btn" style={{ color: "black" }} onClick={handleDeleteClick}>
-            <DeleteIcon />
-          </button>
-          <button className="btn" style={{ color: "black" }} onClick={handleEditClick}>
+          <h1 style={{fontWeight: 700}}>{note.title}</h1>
+          <p>{note.content}</p>
+          <button className="btn" onClick={handleEditClick}>
             <EditIcon />
+          </button>
+          <button className="btn" onClick={handleDeleteClick}>
+            <DeleteIcon />
           </button>
         </>
       )}
     </div>
   );
 }
-
 
 export default Note;

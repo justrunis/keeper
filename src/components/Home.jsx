@@ -6,6 +6,7 @@ import CreateArea from "./CreateArea";
 import { variables } from "../Variables";
 import { useNavigate } from "react-router-dom";
 import {makeGetRequest, makeDeleteRequest, makePostRequest, makePatchRequest } from "../DatabaseRequests.js";
+import Board from "./Board";
 
 function Home(props) {
     const [notes, setNotes] = useState([]);
@@ -22,8 +23,9 @@ function Home(props) {
     async function getNotes() {
         const URL = variables.API_URL + "getNotes/" + email;
         await makeGetRequest(URL).then((data) => {
-            setNotes(data);
-            return data;
+            const sortedNotes = data.sort((a, b) => a.id - b.id);
+            setNotes(sortedNotes);
+            return sortedNotes;
         });
     }
 
@@ -44,7 +46,6 @@ function Home(props) {
         if (newNote.title !== "" && newNote.content !== "" && newNote.color !== "") {
             try {
                 let id = await makePostRequest(URL, newNote);
-                console.log("id", id);
                 newNote.id = id;
 
                 setNotes((prevNotes) => {
@@ -102,6 +103,9 @@ function Home(props) {
         <div>
             <Header loggedIn={loggedIn} />
             <CreateArea onAdd={addNote} />
+            {/* <Board allNotes={notes} title="Todo"/>
+            <Board allNotes={notes} title="Doing"/>
+            <Board allNotes={notes} title="Done"/> */}
             {notes.map((note, index) => {
                 return (
                     <Note

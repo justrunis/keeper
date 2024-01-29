@@ -15,21 +15,21 @@ const saltRounds = 10;
 
 // Change to your own database
 // Windows setup
-const db = new Pool({
-    user: "postgres",
-    host: "localhost",
-    database: "keeper",
-    password: "dbpassword123",
-    port: 5432,
-});
-// Linux setup
 // const db = new Pool({
-//     user: "localhost",
+//     user: "postgres",
 //     host: "localhost",
 //     database: "keeper",
 //     password: "dbpassword123",
-//     port: 5433,
+//     port: 5432,
 // });
+// Linux setup
+const db = new Pool({
+    user: "localhost",
+    host: "localhost",
+    database: "keeper",
+    password: "dbpassword123",
+    port: 5433,
+});
 
 app.use(express.static("public"));
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -250,7 +250,7 @@ app.post('/addNote', async (req, res) => {
     if(userId === false) {
         return;
     }
-    const data = await query("INSERT INTO notes(user_id, title, content, color) VALUES ($1, $2, $3, $4) RETURNING id, user_id, title, content, color", [userId, req.body.title, req.body.content, req.body.color]);
+    const data = await query("INSERT INTO notes(user_id, title, content, color, created_at, updated_at) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id, user_id, title, content, color", [userId, req.body.title, req.body.content, req.body.color, new Date(), new Date()]);
     if (data.rowCount == 0) return false;
     res.json(data.rows[0].id);
     return data.rows[0];
@@ -266,7 +266,7 @@ app.delete('/deleteNote/:id', async (req, res) => {
 // Edit note
 app.patch('/editNote/:id', async (req, res) => {
     const noteID = req.params.id;
-    const data = await query("UPDATE notes SET title=$1, content=$2, color=$3 WHERE id=$4 RETURNING id, title, content, color", [req.body.title, req.body.content, req.body.color, noteID]);
+    const data = await query("UPDATE notes SET title=$1, content=$2, color=$3, updated_at=$4 WHERE id=$5 RETURNING id, title, content, color", [req.body.title, req.body.content, req.body.color, new Date(), noteID]);
     if (data.rowCount == 0) return false;
     res.json(data.rows[0]);
     return data.rows[0];
