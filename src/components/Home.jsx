@@ -10,6 +10,10 @@ function Home(props) {
     const email = localStorage.getItem("email") || props.email;
     const loggedIn = localStorage.getItem("loggedIn") === "true" || props.loggedIn;
 
+    if(!loggedIn){
+        window.location.href = "/";
+    }
+
     localStorage.setItem("email", email);
     localStorage.setItem("loggedIn", loggedIn ? "true" : "false");
 

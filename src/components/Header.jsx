@@ -1,5 +1,4 @@
 import React from "react";
-import HighlightIcon from '@mui/icons-material/Highlight';
 import { useNavigate } from "react-router-dom";
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
@@ -37,6 +36,7 @@ function Header(props) {
           <Nav className="ml-auto">
             {props.loggedIn && (
               <>
+                <Nav.Link href="/profile">Profile</Nav.Link>
                 <Nav.Link onClick={handleLogout}>Logout</Nav.Link>
               </>
             )}

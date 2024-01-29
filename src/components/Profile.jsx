@@ -1,83 +1,48 @@
-import React, { useState } from 'react';
-import { useNavigate } from "react-router-dom";
+import React, {useEffect} from 'react';
 import Header from './Header';
 import Footer from './Footer';
-import Avatar from './Avatar';
-import EditIcon from '@mui/icons-material/Edit';
-import SaveIcon from '@mui/icons-material/Save';
+import { variables } from '../Variables';
+import { makeGetRequest } from '../DatabaseRequests.js';
 
-const Profile = (props) => {
-    const navigate = useNavigate();
+function Profile(props) {
+    const email = localStorage.getItem("email") || props.email;
+    const loggedIn = localStorage.getItem("loggedIn") === "true" || props.loggedIn;
 
-    if(!props.loggedIn) {
-        navigate('/');
+    if (!loggedIn) {
+        window.location.href = "/";
     }
 
+    const [profileInfo, setProfileInfo] = React.useState({});
 
-    const [isEditing, setIsEditing] = useState(false);
-    const [profile, setProfile] = useState({ 
-    name: 'John Doe', 
-    email: 'johndoe@example.com', 
-    img: 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png',
-    phone: '67443252'});
-
-    function handleEdit() {
-        setIsEditing(true);
-
-    };
-
-    function handleChange(e){
-        setProfile({...profile, [e.target.name]: e.target.value});
+    async function getUserInfo() {
+        // Make API call to get user info
+        const URL = variables.API_URL + "getUser/" + email;
+        makeGetRequest(URL).then((data) => {
+            console.log("data", data);
+            setProfileInfo(data);
+        });
     }
 
-    function handleSave() {
-        setIsEditing(false);
-    }
+    useEffect(() => {
+        getUserInfo();
+    }, []);
+    const dob = new Date(profileInfo.date_of_birth).toLocaleDateString();
 
     return (
         <div>
-            <Header />
-            <div className='d-flex justify-content-center align-items-center'>
-                <div className={'profileCard mt-5'}>
-                    <h2>Profile</h2>
-                    <div className='pictureContainer mb-2'>
-                        <Avatar img={profile.img} />
+            <Header loggedIn={loggedIn} />
+                <div className='d-flex justify-content-center'>
+                    <div className="profile-container">
+                        <h2 className="mt-4">Profile Information</h2>
+                        <p className="mb-2">Username: {profileInfo.username}</p>
+                        <p className="mb-2">Email: {profileInfo.email}</p>
+                        <p className="mb-2">Date of Birth: {dob}</p>
+                        <p className="mb-2">Gender: {profileInfo.gender}</p>
                     </div>
-                    {isEditing ? (
-                            <div className='inputContainer mt-5'>
-                                <input className='inputBox' name="name" value={profile.name} onChange={handleChange} />
-                                <br />
-                                <input className='inputBox' name="email" value={profile.email} onChange={handleChange} />
-                                <br />
-                                <input className='inputBox' type='number' name="phone" value={profile.phone} onChange={handleChange} />
-                                <br />
-                                <button className={"inputButton"} onClick={handleSave} style={{backgroundColor: 'white', color: 'black'}}>
-                                    <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
-                                    Save <SaveIcon style={{ marginLeft: "5px" }} />
-                                    </div>
-                                </button>
-                            </div>
-                        ) : (
-                            <div>
-                                <div className='profileInformationContainer'>
-                                    <p><strong>Name: </strong>{profile.name}</p>
-                                    <p><strong>Email: </strong>{profile.email}</p>
-                                    <p><strong>Phone: </strong>{profile.phone}</p>
-                                </div>
-                                    <div className={"inputContainer"}>
-                                    <button className={"inputButton"} onClick={handleEdit} style={{backgroundColor: 'white', color: 'black'}}>
-                                        <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
-                                            Edit <EditIcon style={{ marginLeft: "5px" }} />
-                                        </div>
-                                    </button>
-                                </div>
-                            </div>
-                        )}
                 </div>
-            </div>
             <Footer />
         </div>
     );
-};
+}
 
 export default Profile;

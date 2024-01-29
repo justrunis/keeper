@@ -272,6 +272,14 @@ app.patch('/editNote/:id', async (req, res) => {
     return data.rows[0];
 });
 
+app.get('/getUser/:email', async (req, res) => {
+    const email = req.params.email;
+    const data = await query("SELECT * FROM users WHERE email=$1", [email]);
+    if (data.rowCount == 0) return false;
+    res.json(data.rows[0]);
+    return data.rows[0];
+});
+
 // Start the server
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
