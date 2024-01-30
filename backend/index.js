@@ -272,6 +272,14 @@ app.patch('/editNote/:id', async (req, res) => {
     return data.rows[0];
 });
 
+app.patch('/editCategory/:id', async (req, res) => {
+    const noteID = req.params.id;
+    const data = await query("UPDATE notes SET category=$1, updated_at=$2 WHERE id=$3 RETURNING id, category", [req.body.category, new Date(), noteID]);
+    if (data.rowCount == 0) return false;
+    res.json(data.rows[0]);
+    return data.rows[0];
+});
+
 app.get('/getUser/:email', async (req, res) => {
     const email = req.params.email;
     const data = await query("SELECT * FROM users WHERE email=$1", [email]);
