@@ -9,24 +9,25 @@ import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 
 function Home(props) {
-    const email = localStorage.getItem("email") || props.email;
-    const loggedIn = localStorage.getItem("loggedIn") === "true" || props.loggedIn;
+    const {token} = props;
     const [notes, setNotes] = useState([]);
+    console.log(token);
 
     useEffect(() => {
         const fetchData = async () => {
-            const URL = variables.API_URL + 'getNotes/' + email;
-            const data = await makeGetRequest(URL);
+            const URL = variables.API_URL + 'getNotes';
+            const data = await makeGetRequest(URL, token);
+            console.log(data);
+            // handle error later
             setNotes(data);
         };
 
-        if (loggedIn) {
+        if (token) {
             fetchData();
         }
-    }, [loggedIn, email]);
+    }, [token]);
 
     const addNote = async (newNote) => {
-        newNote.email = email;
 
         const URL = variables.API_URL + "addNote";
 
@@ -71,24 +72,16 @@ function Home(props) {
         });
     };
 
-    if (!loggedIn) {
-        window.location.href = "/";
-    }
-
-    localStorage.setItem("email", email);
-    localStorage.setItem("loggedIn", loggedIn ? "true" : "false");
-
     return (
         <DndProvider backend={HTML5Backend}>
             <div>
-                <Header loggedIn={loggedIn} />
+                <Header token={token} />
                 <CreateArea onAdd={addNote} />
                 <div className="boards">
                     {variables.CATEGORIES.map((category) => (
                         <Board
                             key={category.name}
-                            email={email}
-                            loggedIn={loggedIn}
+                            token={token}
                             title={category.name}
                             boardColor={category.color}
                             notes={notes.filter(note => note.category.toLowerCase() === category.value.toLowerCase())}

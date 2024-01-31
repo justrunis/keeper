@@ -8,7 +8,6 @@ const Board = (props) => {
     const {email, title, notes, onNoteDropped, onNoteDroppedOnDifferentBoard, setNotes, boardColor} = props;
     const [needsEdit, setNeedsEdit] = useState(null);
 
-    const loggedIn = localStorage.getItem('loggedIn') === 'true' || loggedIn;
 
     const [{ isOver }, drop] = useDrop({
             accept: 'NOTE',

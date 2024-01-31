@@ -13,8 +13,7 @@ function Header(props) {
   }
 
   function handleLogout() {
-    localStorage.setItem("email", "");
-    localStorage.setItem("loggedIn", "false");
+    localStorage.removeItem("jwtToken");
     navigate("/");
   }
 
@@ -26,7 +25,7 @@ function Header(props) {
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
-            {!props.loggedIn && (
+            {!props.token && (
               <>
                 <Nav.Link href="/">Login</Nav.Link>
                 <Nav.Link href="/register">Register</Nav.Link>
@@ -34,9 +33,9 @@ function Header(props) {
             )}
           </Nav>
           <Nav className="ml-auto">
-            {props.loggedIn && (
+            {props.token && (
               <>
-                <Nav.Link href="/profile">Profile</Nav.Link>
+                {/* <Nav.Link href="/profile">Profile</Nav.Link> */}
                 <Nav.Link onClick={handleLogout}>Logout</Nav.Link>
               </>
             )}

@@ -1,13 +1,18 @@
 import express from "express";
 import bodyParser from "body-parser";
 import cors from "cors";
-import pg from "pg";
+// import pg from "pg";
 import bcrypt from "bcrypt";
 import passport from "passport";
 import session from "express-session";
 import { Strategy as LocalStrategy } from 'passport-local';
-const { Pool } = pg;
+// const { Pool } = pg;
 import 'dotenv/config';
+// import dbConfig from "./config/db.config";
+import db from "./database.js";
+// https://www.bezkoder.com/react-node-express-postgresql/
+import jwt from "jsonwebtoken";
+import auth from "./auth/auth.js";
 
 const app = express();
 const port = 4000;
@@ -23,13 +28,15 @@ const saltRounds = 10;
 //     port: 5432,
 // });
 // Linux setup
-const db = new Pool({
-    user: "localhost",
-    host: "localhost",
-    database: "keeper",
-    password: "dbpassword123",
-    port: 5433,
-});
+// const db = new Pool({
+//     user: "localhost",
+//     host: "localhost",
+//     database: "keeper",
+//     password: "dbpassword123",
+//     port: 5433,
+// });
+
+
 
 app.use(express.static("public"));
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -215,8 +222,17 @@ app.post('/login', function(req, res, next) {
         }
         req.logIn(user, function(err) {
             if (err) { return next(err); }
+            const token = jwt.sign(
+                {
+                  userId: user.id,
+                  userEmail: user.email,
+                },
+                "RANDOM-TOKEN",
+                { expiresIn: "24h" }
+              );
+
             console.log("Login successful"); // Log login success
-            return res.status(200).json({ success: true, message: 'Login successful', user: user });
+            return res.status(200).json({ success: true, message: 'Login successful', user, token});
         });
     })(req, res, next);
 });
@@ -230,10 +246,9 @@ app.get("/logout",(req,res)=>{
 });
 
 // Get notes
-app.get('/getNotes/:email', async (req, res) => {
-    const email = req.params.email;
-    const userId = await getUserId(email);
-    if(userId === false) {
+app.get('/getNotes', auth, async (req, res) => {
+    const userId = req.user.userId;
+    if (userId === false) {
         res.status(400).json({ message: "User has no notes" });
         console.log("User has no notes");
         return;

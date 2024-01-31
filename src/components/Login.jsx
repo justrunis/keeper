@@ -57,7 +57,9 @@ const Login = (props) => {
               }
           })
           .then(data => {
-              props.handleLogin(true, email);
+            console.log(data);
+              localStorage.setItem("jwtToken", data.token);
+              props.handleLogin(data.token);
               navigate("/home");
           })
           .catch(error => {

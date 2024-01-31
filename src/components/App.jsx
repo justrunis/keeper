@@ -4,24 +4,27 @@ import Home from "./Home";
 import Register from "./Register";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Profile from "./Profile";
+import ProtectedRoute from "./ProtectedRoute";
 
 function App() {
   
-  const [loggedIn, setLoggedIn] = useState(false);
-  const [email, setEmail] = useState("");
+  const [token, setToken] = useState(localStorage.getItem("jwtToken"));
+  console.log(token);
 
-  const handleLogin = (loggedIn, email) => {
-    setLoggedIn(loggedIn);
-    setEmail(email);
+  const handleLogin = (token) => {
+    setToken(token);
   };
 
   return (
   <BrowserRouter>
     <Routes>
       <Route path="/" element={<Login handleLogin={handleLogin} />} />
-      <Route path="/home" element={<Home email={email} loggedIn={loggedIn} />} />
+      {/* <Route path="/home" element={<ProtectedRoute><Home token={token} /></ProtectedRoute>} /> */}
+      <Route path="/" element={<ProtectedRoute token={token}/>}>
+        <Route path="/home" element={<Home token={token} />} />
+        <Route path="/profile" element={<Profile token={token}/>} />
+      </Route>
       <Route path="/register" element={<Register handleLogin={handleLogin} />} />
-      <Route path="/profile" element={<Profile email={email} loggedIn={loggedIn} />} />
     </Routes>
   </BrowserRouter>
   );

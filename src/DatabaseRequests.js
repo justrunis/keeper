@@ -2,15 +2,16 @@
 // All requests return null if there is an error, otherwise they return the data from the request.
 
 
-export async function makeGetRequest(url) {
+export async function makeGetRequest(url, token) {
+
     try {
         const response = await fetch(url, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + token,
             },
         });
-
         if (response.ok) {
             return await response.json();
         } else {
