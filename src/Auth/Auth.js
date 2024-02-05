@@ -20,12 +20,12 @@ export function AuthVerify(token) {
     }
 }
 
-export function getUserName(token) {
+export function getUserEmail(token) {
     const decodedToken = parseJwt(token);
-    return decodedToken.username;
+    return decodedToken.userEmail;
 }
 
 export function getUserId(token) {
     const decodedToken = parseJwt(token);
-    return decodedToken.id;
+    return decodedToken.userId;
 }
