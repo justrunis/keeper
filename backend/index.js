@@ -226,6 +226,7 @@ app.post('/login', function(req, res, next) {
                 {
                   userId: user.id,
                   userEmail: user.email,
+                  userRole: user.role,
                 },
                 "RANDOM-TOKEN",
                 { expiresIn: "24h" }

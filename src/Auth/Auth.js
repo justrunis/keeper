@@ -29,3 +29,8 @@ export function getUserId(token) {
     const decodedToken = parseJwt(token);
     return decodedToken.userId;
 }
+
+export function getUserRole(token) {
+    const decodedToken = parseJwt(token);
+    return decodedToken.userRole;
+}
