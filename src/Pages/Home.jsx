@@ -1,23 +1,21 @@
 import React, { useState, useEffect } from "react";
-import Header from "./Header";
-import Footer from "./Footer";
-import CreateArea from "./CreateArea";
-import { variables } from "../Variables";
+import Header from "../components/Header.jsx";
+import Footer from "../components/Footer.jsx";
+import CreateArea from "../components/CreateArea.jsx";
+import { variables } from "../Variables.js";
 import { makePostRequest, makeGetRequest } from "../DatabaseRequests.js";
-import Board from "./Board";
+import Board from "../components/Board.jsx";
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 
 function Home(props) {
     const {token} = props;
     const [notes, setNotes] = useState([]);
-    console.log(token);
 
     useEffect(() => {
         const fetchData = async () => {
             const URL = variables.API_URL + 'getNotes';
-            const data = await makeGetRequest(URL, token);
-            console.log(data);
+            const data = await makeGetRequest(URL);
             // handle error later
             setNotes(data);
         };
@@ -30,10 +28,12 @@ function Home(props) {
     const addNote = async (newNote) => {
 
         const URL = variables.API_URL + "addNote";
+        console.log(URL);
 
         if (newNote.title !== "" && newNote.content !== "" && newNote.color !== "") {
             try {
                 newNote.category = variables.CATEGORIES[0].value.toLowerCase();
+                newNote.token = token;
                 const id = await makePostRequest(URL, newNote);
                 newNote.id = id;
 

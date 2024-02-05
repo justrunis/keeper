@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import Header from "./Header";
-import Footer from "./Footer";
+import Header from "../components/Header.jsx";
+import Footer from "../components/Footer.jsx";
 import LoginIcon from '@mui/icons-material/Login';
 import { variables } from "../Variables.js";
 import CachedIcon from '@mui/icons-material/Cached';
@@ -57,7 +57,6 @@ const Login = (props) => {
               }
           })
           .then(data => {
-            console.log(data);
               localStorage.setItem("jwtToken", data.token);
               props.handleLogin(data.token);
               navigate("/home");

@@ -2,14 +2,14 @@
 // All requests return null if there is an error, otherwise they return the data from the request.
 
 
-export async function makeGetRequest(url, token) {
+export async function makeGetRequest(url) {
 
     try {
         const response = await fetch(url, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + token,
+                'Authorization': 'Bearer ' + localStorage.getItem('jwtToken'),
             },
         });
         if (response.ok) {
@@ -35,6 +35,7 @@ export async function makePostRequest(url, data) {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + localStorage.getItem('jwtToken'),
             },
             body: JSON.stringify(data),
         });
@@ -59,6 +60,7 @@ export async function makeDeleteRequest(url) {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + localStorage.getItem('jwtToken'),
             },
         });
 
@@ -83,10 +85,12 @@ export async function makeDeleteRequest(url) {
  */
 export async function makePatchRequest(url, data) {
     try {
+        console.log('data', data);
         const response = await fetch(url, {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + localStorage.getItem('jwtToken'),
             },
             body: JSON.stringify(data),
         });

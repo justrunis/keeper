@@ -8,10 +8,6 @@ import MainIcon from "./MainIcon.jsx";
 function Header(props) {
   const navigate = useNavigate();
 
-  function handleClick() {
-    navigate("/home");
-  }
-
   function handleLogout() {
     localStorage.removeItem("jwtToken");
     navigate("/");
@@ -35,7 +31,7 @@ function Header(props) {
           <Nav className="ml-auto">
             {props.token && (
               <>
-                {/* <Nav.Link href="/profile">Profile</Nav.Link> */}
+                <Nav.Link href="/profile">Profile</Nav.Link>
                 <Nav.Link onClick={handleLogout}>Logout</Nav.Link>
               </>
             )}

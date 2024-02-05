@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { variables } from '../Variables';
-import { makeGetRequest, makeDeleteRequest, makePatchRequest } from '../DatabaseRequests';
+import { makeDeleteRequest, makePatchRequest } from '../DatabaseRequests';
 import Note from './Note';
 import { useDrop } from 'react-dnd';
 

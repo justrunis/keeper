@@ -1,25 +1,26 @@
 import React, { useState } from "react";
-import Login from "./Login";
-import Home from "./Home";
-import Register from "./Register";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
-import Profile from "./Profile";
-import ProtectedRoute from "./ProtectedRoute";
+import Login from "./Pages/Login";
+import Home from "./Pages/Home";
+import Register from "./Pages/Register";
+import { BrowserRouter, Route, Routes, redirect } from "react-router-dom";
+import Profile from "./Pages/Profile";
+import ProtectedRoute from "./components/ProtectedRoute";
+import { AuthVerify } from "./Auth/Auth.js";
 
 function App() {
   
   const [token, setToken] = useState(localStorage.getItem("jwtToken"));
-  console.log(token);
 
   const handleLogin = (token) => {
     setToken(token);
   };
 
+  AuthVerify(token);
+
   return (
   <BrowserRouter>
     <Routes>
       <Route path="/" element={<Login handleLogin={handleLogin} />} />
-      {/* <Route path="/home" element={<ProtectedRoute><Home token={token} /></ProtectedRoute>} /> */}
       <Route path="/" element={<ProtectedRoute token={token}/>}>
         <Route path="/home" element={<Home token={token} />} />
         <Route path="/profile" element={<Profile token={token}/>} />

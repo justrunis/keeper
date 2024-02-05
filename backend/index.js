@@ -260,9 +260,11 @@ app.get('/getNotes', auth, async (req, res) => {
 });
 
 // Add note
-app.post('/addNote', async (req, res) => {
-    let userId = await getUserId(req.body.email);
+app.post('/addNote', auth, async (req, res) => {
+    let userId = req.user.userId;
     if(userId === false) {
+        res.status(400).json({ message: "User not found" });
+        console.log("User not found");
         return;
     }
     const data = await query("INSERT INTO notes(user_id, title, content, color, created_at, updated_at, category) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id, user_id, title, content, color, category", [userId, req.body.title, req.body.content, req.body.color, new Date(), new Date(), req.body.category]);
@@ -272,14 +274,26 @@ app.post('/addNote', async (req, res) => {
 });
 
 // Delete note
-app.delete('/deleteNote/:id', async (req, res) => {
+app.delete('/deleteNote/:id', auth, async (req, res) => {
+    let userId = req.user.userId;
+    if(userId === false) {
+        res.status(400).json({ message: "User not found" });
+        console.log("User not found");
+        return;
+    }
     const noteID = req.params.id;
     await query("DELETE FROM notes WHERE id=$1", [noteID]);
     res.status(204).send();
 });
 
 // Edit note
-app.patch('/editNote/:id', async (req, res) => {
+app.patch('/editNote/:id', auth, async (req, res) => {
+    let userId = req.user.userId;
+    if(userId === false) {
+        res.status(400).json({ message: "User not found" });
+        console.log("User not found");
+        return;
+    }
     const noteID = req.params.id;
     const data = await query("UPDATE notes SET title=$1, content=$2, color=$3, updated_at=$4 WHERE id=$5 RETURNING id, title, content, color", [req.body.title, req.body.content, req.body.color, new Date(), noteID]);
     if (data.rowCount == 0) return false;
@@ -295,9 +309,14 @@ app.patch('/editCategory/:id', async (req, res) => {
     return data.rows[0];
 });
 
-app.get('/getUser/:email', async (req, res) => {
-    const email = req.params.email;
-    const data = await query("SELECT * FROM users WHERE email=$1", [email]);
+app.get('/getUser', auth, async (req, res) => {
+    const userID = req.user.userId;
+    if (userID === false) {
+        res.status(400).json({ message: "User not found" });
+        console.log("User not found");
+        return;
+    }
+    const data = await query("SELECT * FROM users WHERE id=$1", [userID]);
     if (data.rowCount == 0) return false;
     res.json(data.rows[0]);
     return data.rows[0];
