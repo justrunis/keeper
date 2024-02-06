@@ -1,7 +1,7 @@
 export const variables={
-    API_URL:"http://localhost:4000/",
+    API_URL:"http://localhost:4000/",// URL of the backend
     MAIN_COLOR: "#ffd966",
-    COLORS: [ // Color for the color picker
+    COLORS: [ // Colors for the color picker
         { name: 'Default', value: '#ffd966' },
         { name: 'Blue', value: '#4ca6d8' },
         { name: 'Green', value: '#3aa15e' },

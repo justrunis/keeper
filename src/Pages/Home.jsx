@@ -10,7 +10,6 @@ import { HTML5Backend } from 'react-dnd-html5-backend';
 
 function Home(props) {
     const {token} = props;
-    console.log(token);
     const [notes, setNotes] = useState([]);
 
     useEffect(() => {

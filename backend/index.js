@@ -238,14 +238,6 @@ app.post('/login', function(req, res, next) {
     })(req, res, next);
 });
 
-// Logout route
-app.get("/logout",(req,res)=>{
-    res.clearCookie("connect.sid"); // Clear the cookies left on client-side
-    req.logOut(()=>{
-        res.redirect("/"); // Redirect to the login page after logout
-    });
-});
-
 // Get notes
 app.get('/getNotes', auth, async (req, res) => {
     const userId = req.user.userId;
@@ -302,6 +294,7 @@ app.patch('/editNote/:id', auth, async (req, res) => {
     return data.rows[0];
 });
 
+// Update on drag and drop
 app.patch('/editCategory/:id', async (req, res) => {
     const noteID = req.params.id;
     const data = await query("UPDATE notes SET category=$1, updated_at=$2 WHERE id=$3 RETURNING id, category", [req.body.category, new Date(), noteID]);
@@ -310,6 +303,7 @@ app.patch('/editCategory/:id', async (req, res) => {
     return data.rows[0];
 });
 
+// Get user for profile
 app.get('/getUser', auth, async (req, res) => {
     const userID = req.user.userId;
     if (userID === false) {
@@ -322,6 +316,51 @@ app.get('/getUser', auth, async (req, res) => {
     res.json(data.rows[0]);
     return data.rows[0];
 });
+
+// Get all users for admin
+app.get('/getAllUsers', auth, async (req, res) => {
+    const userID = req.user.userId;
+    if (userID === false || req.user.userRole !== "admin") {
+        res.status(403).json({ message: "Forbidden" });
+        console.log("Forbidden");
+        return;
+    }
+    const data = await query("SELECT * FROM users");
+    if (data.rowCount == 0) return false;
+    res.json(data.rows);
+    return data.rows;
+});
+
+// Update user information form admin
+app.patch('/updateUser/:id', auth, async (req, res) => {
+    console.log(req.user);
+    const userID = req.user.userId;
+    if (userID === false || req.user.userRole !== "admin") {
+        res.status(403).json({ message: "Forbidden" });
+        console.log("Forbidden");
+        return;
+    }
+    const currentTime = new Date();
+    const data = await query("UPDATE users SET username=$1, email=$2, date_of_birth=$3, gender=$4, role=$5, updated_at=$6 WHERE id=$7 RETURNING id, username, email, date_of_birth, gender, role", [req.body.username, req.body.email, req.body.date_of_birth, req.body.gender, req.body.role, currentTime, req.params.id]);
+    if (data.rowCount == 0) return false;
+    res.json(data.rows[0]);
+    return data.rows[0];
+});
+
+// Delete user form admin
+app.delete('/deleteUser/:id', auth, async (req, res) => {
+    const userID = req.user.userId;
+    if (userID === false || req.user.userRole !== "admin") {
+        res.status(403).json({ message: "Forbidden" });
+        console.log("Forbidden");
+        return;
+    }
+    await query("DELETE FROM notes WHERE user_id=$1", [req.params.id]);
+    await query("DELETE FROM users WHERE id=$1", [req.params.id]);
+    
+    res.status(204).send();
+});
+    
 
 // Start the server
 app.listen(port, () => {

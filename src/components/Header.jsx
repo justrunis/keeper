@@ -3,10 +3,12 @@ import { useNavigate } from "react-router-dom";
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import MainIcon from "./MainIcon.jsx";
+import { getUserRole } from "../Auth/Auth.js";
 
 
 function Header(props) {
   const navigate = useNavigate();
+  const role = getUserRole(props.token);
 
   function handleLogout() {
     localStorage.removeItem("jwtToken");
@@ -31,6 +33,9 @@ function Header(props) {
           <Nav className="ml-auto">
             {props.token && (
               <>
+                {role === 'admin' && (
+                  <Nav.Link href="/users">Users</Nav.Link>
+                )}
                 <Nav.Link href="/profile">Profile</Nav.Link>
                 <Nav.Link onClick={handleLogout}>Logout</Nav.Link>
               </>

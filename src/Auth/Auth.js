@@ -26,11 +26,17 @@ export function getUserEmail(token) {
 }
 
 export function getUserId(token) {
+    if(token === undefined || token === null){
+        return;
+    }
     const decodedToken = parseJwt(token);
     return decodedToken.userId;
 }
 
 export function getUserRole(token) {
+    if(token === undefined || token === null){
+        return;
+    }
     const decodedToken = parseJwt(token);
     return decodedToken.userRole;
 }
