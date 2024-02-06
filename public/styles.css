@@ -275,3 +275,93 @@ form.create-note button{
   box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.3);
   padding: 20px;
 }
+
+.profile-info td{
+  max-width: 200px;
+  word-wrap: break-word;
+}
+
+@media (max-width: 1300px) {
+  .boards{
+    flex-direction: row;
+    justify-content: center;
+  }
+  .board-container{
+    min-width: 250px;
+    max-width: 250px;
+  }
+
+  form.create-note{
+    width: auto;
+  }
+
+  .note{
+    width: 150px;
+  }
+}
+
+@media (max-width: 992px) {
+  .boards{
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  .board-container{
+    min-width: 350px;
+    max-width: 350px;
+  }
+
+  form.create-note{
+    width: auto;
+  }
+
+  .note{
+    width: 200px;
+  }
+
+}
+
+@media (max-width: 450px) {
+  .mainContainer {
+    flex-direction: column;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: auto;
+  }
+
+  .titleContainer {
+    font-size: 48px;
+  }
+
+  .resultContainer,
+  .historyItem {
+    flex-direction: column;
+    width: 100%;
+    align-items: flex-start;
+    justify-content: center;
+  }
+
+  .historyContainer {
+    height: auto;
+    flex-grow: 1;
+    justify-content: center;
+  }
+
+  .buttonContainer {
+    height: auto;
+  }
+
+  .inputContainer {
+    align-items: center;
+    margin-top: 20px;
+  }
+
+  .inputBox {
+    width: 100%;
+  }
+
+  .inputButton {
+    width: 200%;
+  }
+}
