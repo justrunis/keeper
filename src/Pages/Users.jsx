@@ -63,15 +63,11 @@ const Users = (props) => {
     }
 
     async function handleDeleteUser(id) {
-        console.log('id', id);
         if(id){
             const URL = variables.API_URL + 'deleteUser/' + id;
             await makeDeleteRequest(URL);
             const updatedUsers = await makeGetRequest(variables.API_URL + 'getAllUsers');
             setUsers(updatedUsers);
-            // await makeDeleteRequest(URL);
-            // const updatedUsers = await makeGetRequest(variables.API_URL + 'getAllUsers');
-            // setUsers(updatedUsers);
         }
     }
 
@@ -80,17 +76,17 @@ const Users = (props) => {
             <Header token={token} />
             <h1 className='text-center my-3'>All users</h1>
             <div className='d-flex justify-content-center container'>
-                <Table striped bordered hover responsive>
+                <Table bordered hover responsive>
                     <thead>
                         <tr>
-                            <th onClick={() => handleSort('username')}>Username</th>
-                            <th onClick={() => handleSort('email')}>Email</th>
-                            <th onClick={() => handleSort('gender')}>Gender</th>
-                            <th onClick={() => handleSort('role')}>Role</th>
-                            <th onClick={() => handleSort('date_of_birth')}>Date of Birth</th>
-                            <th onClick={() => handleSort('created_at')}>Created At</th>
-                            <th onClick={() => handleSort('updated_at')}>Updated At</th>
-                            <th>Actions</th>
+                            <th onClick={() => handleSort('username')} style={{ backgroundColor: variables.MAIN_COLOR }}>Username</th>
+                            <th onClick={() => handleSort('email')} style={{ backgroundColor: variables.MAIN_COLOR }}>Email</th>
+                            <th onClick={() => handleSort('gender')} style={{ backgroundColor: variables.MAIN_COLOR }}>Gender</th>
+                            <th onClick={() => handleSort('role')} style={{ backgroundColor: variables.MAIN_COLOR }}>Role</th>
+                            <th onClick={() => handleSort('date_of_birth')} style={{ backgroundColor: variables.MAIN_COLOR }}>Date of Birth</th>
+                            <th onClick={() => handleSort('created_at')} style={{ backgroundColor: variables.MAIN_COLOR }}>Created At</th>
+                            <th onClick={() => handleSort('updated_at')} style={{ backgroundColor: variables.MAIN_COLOR }}>Updated At</th>
+                            <th style={{ backgroundColor: variables.MAIN_COLOR }}>Actions</th>
                         </tr>
                     </thead>
                     <tbody>

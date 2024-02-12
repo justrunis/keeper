@@ -1,41 +1,18 @@
 import express from "express";
 import bodyParser from "body-parser";
 import cors from "cors";
-// import pg from "pg";
 import bcrypt from "bcrypt";
 import passport from "passport";
 import session from "express-session";
 import { Strategy as LocalStrategy } from 'passport-local';
-// const { Pool } = pg;
 import 'dotenv/config';
-// import dbConfig from "./config/db.config";
 import db from "./database.js";
-// https://www.bezkoder.com/react-node-express-postgresql/
 import jwt from "jsonwebtoken";
 import auth from "./auth/auth.js";
 
 const app = express();
 const port = 4000;
 const saltRounds = 10;
-
-// Change to your own database
-// Windows setup
-// const db = new Pool({
-//     user: "postgres",
-//     host: "localhost",
-//     database: "keeper",
-//     password: "dbpassword123",
-//     port: 5432,
-// });
-// Linux setup
-// const db = new Pool({
-//     user: "localhost",
-//     host: "localhost",
-//     database: "keeper",
-//     password: "dbpassword123",
-//     port: 5433,
-// });
-
 
 
 app.use(express.static("public"));
@@ -64,55 +41,40 @@ app.use(passport.session());
 
 // Check if email exists in the database
 const emailExists = async (email) => {
-    // Query the database to check if the email exists
     const data = await query("SELECT * FROM users WHERE email=$1", [email]);
    
-    // Return the user data if found, otherwise return false
     if (data.rowCount == 0) return false;
     return data.rows[0];
 };
 
 const usernameExists = async (username) => {
-    // Query the database to check if the email exists
     const data = await query("SELECT * FROM users WHERE username=$1", [username]);
    
-    // Return the user data if found, otherwise return false
     if (data.rowCount == 0) return false;
     return data.rows[0];
 }
 
 // Create a new user in the database
 const createUser = async (username, email, password, date_of_birth, gender) => {
-    // Generate a salt and hash the password
     const salt = await bcrypt.genSalt(saltRounds);
     const hash = await bcrypt.hash(password, salt);
    
-    // Get the current time
     const currentTime = new Date().toISOString();
    
-    // Insert the new user into the database and return the user data
     const data = await query(
         "INSERT INTO users(username, email, password, date_of_birth, gender, role, created_at, updated_at) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING id, username, email, date_of_birth, gender, role, created_at, updated_at",
         [username, email, hash, date_of_birth, gender, "user", currentTime, currentTime]
     );
    
-    // Return the newly created user
     if (data.rowCount == 0) return false;
     return data.rows[0];
 };
  
 // Match entered password with the hashed password from the database
 const matchPassword = async (password, hashPassword) => {
-    // Compare the entered password with the hashed password
     const match = await bcrypt.compare(password, hashPassword);
     return match
 };
-
-async function getUserId(email) {
-    const data = await query("SELECT * FROM users WHERE email=$1", [email]);
-    if (data.rowCount == 0) return false;
-    return data.rows[0].id;
-}
  
 // Passport strategy for user registration
 passport.use("local-register", new LocalStrategy({ passReqToCallback: true }, async (req, email, password, done) => {
@@ -120,19 +82,16 @@ passport.use("local-register", new LocalStrategy({ passReqToCallback: true }, as
         const { date_of_birth, gender, username } = req.body;
         email = req.body.email
 
-        // Check if the user already exists
         const isEmail = await emailExists(email);
-        const isUsername = await usernameExists(username);
- 
-        // If user or email exists, return with message
         if (isEmail) {
             return done(null, false, {message: "Email is already in use"});
         }
+
+        const isUsername = await usernameExists(username);
         if(isUsername) {
             return done(null, false, {message: "Username is already in use"});
         }
  
-        // Create a new user and return the user object
         const user = await createUser(username, email, password, date_of_birth, gender);
         return done(null, user);
     } catch (error) {
@@ -143,18 +102,14 @@ passport.use("local-register", new LocalStrategy({ passReqToCallback: true }, as
 // Passport strategy for user login
 passport.use("local-login", new LocalStrategy(async (email, password, done) => {
     try {
-        // Find the user in the database
         const user = await emailExists(email);
+
         const messageText = "Incorrect email or password";
-        
-        // If user doesn't exist, return message
         if (!user) return done(null, false, {message: messageText});
-        
-        // Check if the password matches
+
         const isMatch = await matchPassword(password, user.password);
-        
-        // Return user object if password matches, otherwise return message
         if (!isMatch) return done(null, false, {message: messageText});
+
         return done(null, user);
     } catch (error) {
         return done(error, false);
@@ -169,7 +124,6 @@ passport.serializeUser((user, done) => {
 // Deserialize user information for session management
 passport.deserializeUser(async (id, done) => {
     try {
-        // Find the user by ID and return the user object
         const response = await query('SELECT * FROM users WHERE id = $1', [id]);
         const user = response.rows[0];
         done(null, user);
@@ -228,7 +182,7 @@ app.post('/login', function(req, res, next) {
                   userEmail: user.email,
                   userRole: user.role,
                 },
-                "RANDOM-TOKEN",
+                process.env.TOKEN_PUBLIC_KEY,
                 { expiresIn: "24h" }
               );
 
@@ -327,7 +281,15 @@ app.get('/getAllUsers', auth, async (req, res) => {
     }
     const data = await query("SELECT * FROM users");
     if (data.rowCount == 0) return false;
+
+    // Iterate through each user and adjust the date_of_birth field
+    data.rows.forEach(user => {
+        const databaseDate = new Date(user.date_of_birth + ' UTC');
+        user.date_of_birth = databaseDate.toISOString().split('T')[0];
+    });
+
     res.json(data.rows);
+    console.log(data.rows[0].date_of_birth);
     return data.rows;
 });
 

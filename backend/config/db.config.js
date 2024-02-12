@@ -1,25 +1,12 @@
-// Windows setup
-// const dbConfig = {
-//     HOST: "localhost",
-//     USER: "postgres",
-//     PASSWORD: "dbpassword123",
-//     DB: "keeper",
-//     PORT: 5432,
-//     dialect: "postgres",
-//     pool: {
-//         max: 5,
-//         min: 0,
-//         acquire: 30000,
-//         idle: 10000,
-//     }
-// };
-// Linux setup
+import dotenv from 'dotenv';
+dotenv.config({ path: '../.env' });
+
 const dbConfig = {
-    HOST: "localhost",
-    USER: "localhost",
-    PASSWORD: "dbpassword123",
-    DB: "keeper",
-    PORT: 5433,
+    HOST: process.env.DB_HOST,
+    USER: process.env.DB_USER,
+    PASSWORD: process.env.DB_PASSWORD,
+    DB: process.env.DB_DB,
+    PORT: process.env.DB_PORT,
 };
 
 export default dbConfig;

@@ -1,4 +1,6 @@
 import jwt from "jsonwebtoken";
+import dotenv from 'dotenv';
+dotenv.config({ path: '../.env' });
 
 export default async (request, response, next) => {
   try {
@@ -6,7 +8,7 @@ export default async (request, response, next) => {
     const token = await request.headers.authorization.split(" ")[1];
 
     //check if the token matches the supposed origin
-    const decodedToken = await jwt.verify(token, "RANDOM-TOKEN");
+    const decodedToken = await jwt.verify(token, process.env.TOKEN_PUBLIC_KEY);
 
     // retrieve the user details of the logged in user
     const user = await decodedToken;

@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { variables } from '../Variables';
 import { makeDeleteRequest, makePatchRequest } from '../DatabaseRequests';
 import Note from './Note';
 import { useDrop } from 'react-dnd';
 
 const Board = (props) => {
-    const {email, title, notes, onNoteDropped, onNoteDroppedOnDifferentBoard, setNotes, boardColor} = props;
+    const {title, notes, onNoteDropped, onNoteDroppedOnDifferentBoard, setNotes, boardColor} = props;
     const [needsEdit, setNeedsEdit] = useState(null);
 
 

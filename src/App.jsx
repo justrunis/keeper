@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Login from "./Pages/Login";
 import Home from "./Pages/Home";
 import Register from "./Pages/Register";
-import { BrowserRouter, Route, Routes, redirect } from "react-router-dom";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Profile from "./Pages/Profile";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { AuthVerify } from "./Auth/Auth.js";

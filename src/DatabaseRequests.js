@@ -40,7 +40,6 @@ export async function makePostRequest(url, data) {
             body: JSON.stringify(data),
         });
         const result = await response.json();
-        console.log('Success:', result);
         return result;
     } catch (error) {
         console.error('Error:', error);
@@ -85,7 +84,6 @@ export async function makeDeleteRequest(url) {
  */
 export async function makePatchRequest(url, data) {
     try {
-        console.log('data', data);
         const response = await fetch(url, {
             method: 'PATCH',
             headers: {
