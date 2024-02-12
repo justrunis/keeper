@@ -4,8 +4,8 @@ import EditIcon from '@mui/icons-material/Edit';
 import SaveIcon from '@mui/icons-material/Save';
 import CancelIcon from '@mui/icons-material/Cancel';
 import ColorSelect from "./ColorSelect";
-import Draggable from "react-draggable";
 import { useDrag } from "react-dnd";
+import { toast } from "react-toastify";
 
 function Note(props) {
 
@@ -17,16 +17,12 @@ function Note(props) {
     color: selectedColor
   });
 
-  const [formErrors, setFormErrors] = useState({
-    titleError: "",
-    noteError: "",
-    colorError: "",
-  });
-
   function handleDeleteClick() {
     const isConfirmed = window.confirm("Are you sure you want to delete this note?");
     if (isConfirmed) {
       props.onDelete(props.id);
+      const deleteMessage = "The note has been deleted"
+      toast.success(deleteMessage);
     }
   }
 
@@ -36,39 +32,52 @@ function Note(props) {
 
   function handleTitleChange(event) {
     setNote({ ...note, title: event.target.value });
-    setFormErrors({ ...formErrors, titleError: "" });
   }
 
   function handleContentChange(event) {
     setNote({ ...note, content: event.target.value });
-    setFormErrors({ ...formErrors, noteError: "" });
   }
 
   function handleColorChange(color) {
     console.log("selectedColor", color);
     setNote({ ...note, color: color });
-    setFormErrors({ ...formErrors, colorError: "" });
     selectedColor = color;
   }
 
   function handleSaveClick() {
-    setFormErrors({ titleError: "", noteError: "" });
     if (note.title.trim() === "") {
-      setFormErrors({ ...formErrors, titleError: "Title is required" });
+      const errorMessage = "Title is required";
+      toast.error(errorMessage);
+      return;
+    }
+    
+    if (note.title.length >= 255) {
+      const errorMessage = "Title must be smaller than 255 characters";
+      toast.error(errorMessage);
       return;
     }
 
     if (note.content.trim() === "") {
-      setFormErrors({ ...formErrors, noteError: "Note content is required" });
+      const errorMessage = "Note content is required";
+      toast.error(errorMessage);
+      return;
+    }
+
+    if(note.content.length >= 1000) {
+      const errorMessage = "Note content must be smaller than 1000 characters";
+      toast.error(errorMessage);
       return;
     }
 
     if (note.color.trim() === "") {
-      setFormErrors({ ...formErrors, colorError: "Color is required" });
+      const errorMessage = "Color is required"
+      toast.error(errorMessage);
       return;
     }
 
     props.onSave(props.id, note.title, note.content, note.color);
+    const successMessage = "Note has been updated";
+    toast.success(successMessage);
   }
 
   function handleCancelClick() {
@@ -94,11 +103,8 @@ function Note(props) {
             <>
               <div className="edit-note">
                 <input className="inputContainer" type="text" value={note.title} onChange={handleTitleChange} />
-                {formErrors.titleError && <p className="errorLabel">{formErrors.titleError}</p>}
                 <textarea className="inputContainer" value={note.content} onChange={handleContentChange} />
-                {formErrors.noteError && <p className="errorLabel">{formErrors.noteError}</p>}
                 <ColorSelect onColorChange={handleColorChange} noteColor={note.color} className="mb-5" />
-                {formErrors.colorError && <p className="errorLabel">{formErrors.colorError}</p>}
                 
                 <div className="button-container">
                   <button className="btn" style={{ color: "black" }} onClick={handleSaveClick}>

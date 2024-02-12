@@ -4,7 +4,7 @@ import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import MainIcon from "./MainIcon.jsx";
 import { getUserRole } from "../Auth/Auth.js";
-
+import { toast } from "react-toastify";
 
 function Header(props) {
   const navigate = useNavigate();
@@ -12,6 +12,7 @@ function Header(props) {
 
   function handleLogout() {
     localStorage.removeItem("jwtToken");
+    toast.success("Logged out successfully");
     navigate("/");
   }
 

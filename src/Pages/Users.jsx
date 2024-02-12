@@ -7,6 +7,7 @@ import { getUserRole } from '../Auth/Auth';
 import Table from 'react-bootstrap/Table';
 import Modal from 'react-bootstrap/Modal';
 import Form from 'react-bootstrap/Form';
+import { toast } from "react-toastify";
 
 const Users = (props) => {
     const { token } = props;
@@ -30,7 +31,7 @@ const Users = (props) => {
         if (token) {
             getUsers();
         }
-    }, [token]);
+    }, []);
 
     function formatDate(date, needsTime) {
         if (needsTime) {
@@ -50,6 +51,20 @@ const Users = (props) => {
             setSortColumn(columnName);
             setSortOrder('asc');
         }
+
+        const sortedUsers = [...users].sort((a, b) => {
+            const aValue = a[columnName];
+            const bValue = b[columnName];
+            if (aValue < bValue) {
+                return sortOrder === 'asc' ? -1 : 1;
+            }
+            if (aValue > bValue) {
+                return sortOrder === 'asc' ? 1 : -1;
+            }
+            return 0;
+        });
+
+        setUsers(sortedUsers);
     }
 
     async function handleEditUser() {
@@ -59,6 +74,7 @@ const Users = (props) => {
             setShowEditModal(false);
             const updatedUsers = await makeGetRequest(variables.API_URL + 'getAllUsers');
             setUsers(updatedUsers);
+            toast.success(`User ${selectedUser.username} has been updated`);
         }
     }
 
@@ -68,6 +84,7 @@ const Users = (props) => {
             await makeDeleteRequest(URL);
             const updatedUsers = await makeGetRequest(variables.API_URL + 'getAllUsers');
             setUsers(updatedUsers);
+            toast.success(`User has been removed`);
         }
     }
 

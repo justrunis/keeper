@@ -12,7 +12,7 @@ const Board = (props) => {
     const [{ isOver }, drop] = useDrop({
             accept: 'NOTE',
             drop: async (item, monitor) => {
-                console.log(`Dropped note with ID ${item.id} onto board ${title}`);
+                // console.log(`Dropped note with ID ${item.id} onto board ${title}`);
                 const updatedNote = await makePatchRequest(variables.API_URL + 'editCategory/' + item.id, {
                   category: title.toLowerCase(),
                 });
@@ -52,6 +52,7 @@ const Board = (props) => {
 
     async function editNote(id, title, content, color) {
         const URL = variables.API_URL + "editNote/" + id;
+        
         const updatedNote = await makePatchRequest(URL, { id: id, title: title, content: content, color: color });
 
         setNotes((prevNotes) => {

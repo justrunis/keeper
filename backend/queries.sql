@@ -23,3 +23,6 @@ CREATE TABLE notes (
 
 ALTER TABLE notes
     ADD category VARCHAR(255) NULL;
+
+ALTER TABLE notes
+    ADD order_number INT NULL;

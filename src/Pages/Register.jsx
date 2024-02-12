@@ -3,6 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 import Header from '../components/Header.jsx';
 import Footer from '../components/Footer.jsx';
 import { variables } from "../Variables.js";
+import { toast } from "react-toastify";
 
 function Register(props) {
 
@@ -24,7 +25,6 @@ function Register(props) {
         genderError: ""
     });
 
-    const [displayError, setDisplayError] = useState("");
     const [isLoading, setIsLoading] = useState(false);
 
     function handleInputChange(e){
@@ -49,28 +49,44 @@ function Register(props) {
         let isValid = true;
 
         if (formData.email === "") {
-            newFormErrors.emailError = "Email cannot be empty";
+            const errorMessage = "Email cannot be empty";
+            newFormErrors.emailError = errorMessage;
+            toast.error(errorMessage);
         }
         if (formData.password === "") {
-            newFormErrors.passwordError = "Password cannot be empty";
+            const errorMessage = "Password cannot be empty";
+            newFormErrors.passwordError = errorMessage;
+            toast.error(errorMessage);
         }
         if (formData.repeatPassword === "") {
-            newFormErrors.repeatPasswordError = "Repeat password cannot be empty";
+            const errorMessage = "Repeat password cannot be empty";
+            newFormErrors.repeatPasswordError = errorMessage;
+            toast.error(errorMessage);
         }
         if (formData.username === "") {
-            newFormErrors.usernameError = "Username cannot be empty";
+            const errorMessage = "Username cannot be empty";
+            newFormErrors.usernameError = errorMessage;
+            toast.error(errorMessage);
         }
         if (formData.date_of_birth === "") {
-            newFormErrors.date_of_birthError = "Date of birth cannot be empty";
+            const errorMessage = "Date of birth cannot be empty";
+            newFormErrors.date_of_birthError = errorMessage;
+            toast.error(errorMessage);
         }
         if (formData.gender === "") {
-            newFormErrors.genderError = "Gender cannot be empty";
+            const errorMessage = "Gender cannot be empty";
+            newFormErrors.genderError = errorMessage;
+            toast.error(errorMessage);
         }
         if (formData.password !== formData.repeatPassword) {
-            newFormErrors.passwordError = "Passwords do not match";
+            const errorMessage = "Passwords do not match";
+            newFormErrors.passwordError = errorMessage;
+            toast.error(errorMessage);
         }
-        if(formData.email !== "" && !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(formData.email)) {
-            newFormErrors.emailError = "Invalid email address";
+        if (formData.email !== "" && !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(formData.email)) {
+            const errorMessage = "Invalid email address";
+            newFormErrors.emailError = errorMessage;
+            toast.error(errorMessage);
             isValid = false;
         }
 
@@ -104,13 +120,13 @@ function Register(props) {
             })
             .then(data => {
                 props.handleLogin(true, formData.email);
+                const successMessage = `User ${formData.username} has been created`;
+                toast.success(successMessage);
                 navigate("/");
             })
             .catch(error => {
                 setIsLoading(false);
-                setDisplayError(error.message);
-                document.getElementsByClassName('alert alert-danger')[0].style.display = 'block';
-                console.error('Registration error:', error.message);
+                toast.error(error.message);
             });
         }
     }
@@ -123,7 +139,6 @@ function Register(props) {
                     <div>Register</div>
                 </div>
                 <div className={"flexContainer"}>
-                    <div className='alert alert-danger' style={{display: 'none'}}>{displayError}</div>
                     <div className={"inputContainer"}>
                         <label htmlFor="username">Username</label>
                         <input

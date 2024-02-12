@@ -4,15 +4,11 @@ import Fab from "@mui/material/Fab";
 import Zoom from "@mui/material/Zoom";
 import ColorSelect from "./ColorSelect";
 import { variables } from "../Variables";
+import { toast } from "react-toastify";
 
 function CreateArea(props) {
   const [note, setNote] = useState({ title: "", content: "", color: "" });
   const [isExpanded, setIsExpanded] = useState(false);
-
-  const [formErrors, setFormErrors] = useState({
-    titleError: "",
-    noteError: "",
-  });
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -41,17 +37,10 @@ function CreateArea(props) {
   }
 
   function submitNote(event) {
-    setFormErrors({
-      emailError: "",
-      passwordError: "",
-      usernameError: "",
-    });
 
     if (note.title === "") {
-      setFormErrors((prevErrors) => ({
-        ...prevErrors,
-        titleError: "Please enter a title",
-      }));
+      const errorMessage = "Please enter a title"
+      toast.error(errorMessage);
       event.preventDefault();
       return;
     }
@@ -61,23 +50,33 @@ function CreateArea(props) {
     }
 
     if (note.content === "") {
-      setFormErrors((prevErrors) => ({
-        ...prevErrors,
-        noteError: "Please enter some content",
-      }));
+      const errorMessage = "Please enter some content"
+      toast.error(errorMessage);
+      event.preventDefault();
+      return;
+    }
+
+    if(note.title.length >= 255) {
+      const errorMessage = "Title must be smaller than 255 characters";
+      toast.error(errorMessage);
+      event.preventDefault();
+      return;
+    }
+
+    if(note.content.length >= 1000) {
+      const errorMessage = "Note content must be smaller than 1000 characters";
+      toast.error(errorMessage);
       event.preventDefault();
       return;
     }
 
     props.onAdd(note);
+    const successMessage = `Note "${note.title}" has been added`;
+    toast.success(successMessage);
     setNote({
       title: "",
       content: "",
       color: "",
-    });
-    setFormErrors({
-      titleError: "",
-      noteError: "",
     });
     event.preventDefault();
   }
@@ -106,7 +105,6 @@ function CreateArea(props) {
             onChange={handleChange}
           />
         )}
-        <label className="errorLabel">{formErrors.titleError}</label>
 
         <textarea
           name="content"
@@ -116,7 +114,6 @@ function CreateArea(props) {
           onClick={handleContentClick}
           onChange={handleChange}
         />
-        <label className="errorLabel">{formErrors.noteError}</label>
         {isExpanded && (
           <div className="note-color-container">
             <ColorSelect onColorChange={handleColorChange} />

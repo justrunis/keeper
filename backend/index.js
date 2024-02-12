@@ -289,13 +289,11 @@ app.get('/getAllUsers', auth, async (req, res) => {
     });
 
     res.json(data.rows);
-    console.log(data.rows[0].date_of_birth);
     return data.rows;
 });
 
 // Update user information form admin
 app.patch('/updateUser/:id', auth, async (req, res) => {
-    console.log(req.user);
     const userID = req.user.userId;
     if (userID === false || req.user.userRole !== "admin") {
         res.status(403).json({ message: "Forbidden" });
