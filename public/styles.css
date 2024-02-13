@@ -701,7 +701,9 @@ form.create-note button {
 }
 
 .draggable-container {
-  height: 50px;
+  flex: 1;
+  margin-bottom: 10px;
+  height: 30px;
   width: 100%;
   text-align: center;
   line-height: 100px;

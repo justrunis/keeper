@@ -150,10 +150,14 @@ const Board = (props) => {
     <div>
       <h2>{title}</h2>
       <div className="board-container" style={{ backgroundColor: boardColor }}>
-        <DropArea area_id={0} onDrop={handleDrop} />
+        <DropArea
+          area_id={notes.length + 1}
+          onDrop={handleDrop}
+          fullHeight={notes.length === 0}
+        />
         {notes
           .sort((a, b) => a.order_number - b.order_number)
-          .map((note) => (
+          .map((note, index) => (
             <React.Fragment key={note.id}>
               <Note
                 id={note.id}
@@ -167,7 +171,12 @@ const Board = (props) => {
                 onEdit={enableEdit}
                 onSave={editNote}
               />
-              <DropArea area_id={note.order_number} onDrop={handleDrop} />
+
+              <DropArea
+                area_id={note.order_number}
+                onDrop={handleDrop}
+                fullHeight={index === notes.length - 1} // Set fullHeight for the last one
+              />
             </React.Fragment>
           ))}
       </div>

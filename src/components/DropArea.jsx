@@ -1,8 +1,7 @@
-// DropArea.js
 import React from "react";
 import { useDrop } from "react-dnd";
 
-const DropArea = ({ area_id, onDrop }) => {
+const DropArea = ({ area_id, onDrop, fullHeight }) => {
   const [{ isOver }, drop] = useDrop({
     accept: "NOTE",
     drop: async (item, monitor) => {
@@ -13,13 +12,15 @@ const DropArea = ({ area_id, onDrop }) => {
     }),
   });
 
+  const containerStyle = {
+    flex: fullHeight ? "1" : "none", // Use flex 1 if fullHeight, otherwise use 'none'
+  };
+
   return (
     <div
       ref={drop}
       className="draggable-container"
-      style={{
-        backgroundColor: isOver ? "yellow" : "red",
-      }}
+      style={containerStyle}
     ></div>
   );
 };
