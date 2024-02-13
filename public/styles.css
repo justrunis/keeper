@@ -271,7 +271,6 @@ form.create-note button {
   border: 5px solid white;
   border-radius: 7px;
   box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.3);
-  padding: 20px;
 }
 
 .profile-info td {
@@ -702,7 +701,6 @@ form.create-note button {
 
 .draggable-container {
   flex: 1;
-  margin-bottom: 10px;
   height: 30px;
   width: 100%;
   text-align: center;

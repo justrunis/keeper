@@ -92,39 +92,19 @@ const Board = (props) => {
   }
 
   const handleDrop = (noteId, areaId) => {
-    // const note = notes.find((note) => note.id === noteId);
-    // if (note.order_number === areaId || note.order_number - 1 === areaId) {
-    //   return;
-    // }
-    console.log(
-      `Dropped note with ID ${noteId} onto board ${title.toLowerCase()}`
-    );
     setNotes((prevNotes) => {
-      // Find the index of the dropped note
       const droppedNoteIndex = prevNotes.findIndex(
         (note) => note.id === noteId
       );
 
-      // Create a copy of the notes array to avoid mutating the original state
       const updatedNotes = [...prevNotes];
-
-      // Find the category of the dropped note
       const droppedNoteCategory = title.toLowerCase();
 
-      // Check if the dropped note is within the same board
-      // if (droppedNoteCategory === title.toLowerCase()) {
-      // Update the order_number of the dropped note
       updatedNotes[droppedNoteIndex].order_number = areaId + 0.5;
       updatedNotes[droppedNoteIndex].category = droppedNoteCategory;
 
-      // Update the order_number of subsequent notes
       let order = 1;
       updatedNotes.sort((a, b) => a.order_number - b.order_number);
-
-      console.log(
-        "Updated notes1:",
-        updatedNotes.map((note) => note.order_number)
-      );
 
       for (let i = 0; i < updatedNotes.length; i++) {
         if (updatedNotes[i].category === droppedNoteCategory) {
@@ -132,12 +112,6 @@ const Board = (props) => {
           order++;
         }
       }
-
-      // Update the state with the new order_numbers
-      console.log(
-        "Updated notes:",
-        updatedNotes.map((note) => note.order_number)
-      );
 
       const URL = variables.API_URL + "editOrders";
       makePostRequest(URL, updatedNotes);
@@ -175,7 +149,7 @@ const Board = (props) => {
               <DropArea
                 area_id={note.order_number}
                 onDrop={handleDrop}
-                fullHeight={index === notes.length - 1} // Set fullHeight for the last one
+                fullHeight={index === notes.length - 1}
               />
             </React.Fragment>
           ))}
