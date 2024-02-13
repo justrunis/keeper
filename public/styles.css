@@ -1,5 +1,5 @@
-:root{
-  --main-color: #FFD966;
+:root {
+  --main-color: #ffd966;
 }
 
 * {
@@ -47,17 +47,16 @@ footer p {
   box-shadow: 0 2px 5px #ccc;
   padding: 10px;
   width: 240px;
-  margin: 16px;
+  /* margin: 16px; */
   float: left;
   border: 5px solid white;
 }
-  
+
 .note h1 {
   font-size: 1.1em;
   margin-bottom: 6px;
 }
-.note p
-.note-color-container p {
+.note p .note-color-container p {
   font-size: 1.1em;
   margin-bottom: 10px;
   white-space: pre-wrap;
@@ -74,7 +73,7 @@ footer p {
   cursor: pointer;
   outline: none;
 }
-.color-select{
+.color-select {
   width: 100%;
   font-size: 1.2em;
   font-family: inherit;
@@ -85,10 +84,9 @@ footer p {
   box-shadow: 0 1px 5px rgb(138, 137, 137);
 }
 
-.color-select option{
+.color-select option {
   color: black;
-  font-weight:500;
-  
+  font-weight: 500;
 }
 
 form.create-note {
@@ -110,7 +108,7 @@ form.create-note textarea {
   font-family: inherit;
   resize: none;
 }
-form.create-note button{
+form.create-note button {
   position: absolute;
   right: 18px;
   bottom: -18px;
@@ -124,17 +122,17 @@ form.create-note button{
   outline: none;
 }
 
-.edit-note{
+.edit-note {
   position: relative;
   border: none;
   outline: none;
 }
-.edit-note input{
+.edit-note input {
   font-weight: bold;
 }
 
 .edit-note input,
-.edit-note textarea{
+.edit-note textarea {
   width: 100%;
   outline: none;
   font-family: inherit;
@@ -162,7 +160,8 @@ form.create-note button{
   justify-content: center;
 }
 
-.resultContainer, .historyItem { 
+.resultContainer,
+.historyItem {
   flex-direction: row;
   display: flex;
   width: 400px;
@@ -211,7 +210,7 @@ form.create-note button{
   padding-left: 8px;
 }
 
-.inputButton{
+.inputButton {
   height: 48px;
   width: 400px;
   font-size: large;
@@ -246,9 +245,8 @@ form.create-note button{
   margin-bottom: 0.5rem;
 }
 
-
 /* Board style */
-.boards{
+.boards {
   display: flex;
   flex-direction: row;
   gap: 50px;
@@ -257,12 +255,12 @@ form.create-note button{
   margin-bottom: 100px;
 }
 
-.boards h2{
+.boards h2 {
   text-align: center;
   font-weight: 700;
 }
 
-.board-container{
+.board-container {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -276,45 +274,44 @@ form.create-note button{
   padding: 20px;
 }
 
-.profile-info td{
+.profile-info td {
   max-width: 200px;
   word-wrap: break-word;
 }
 
 @media (max-width: 1300px) {
-  .boards{
+  .boards {
     flex-direction: row;
     justify-content: center;
   }
-  .board-container{
+  .board-container {
     min-width: 300px;
     max-width: 300px;
   }
 
-  .note{
+  .note {
     width: 200px;
   }
 }
 
 @media (max-width: 992px) {
-  .boards{
+  .boards {
     flex-direction: column;
     justify-content: center;
     align-items: center;
   }
-  .board-container{
+  .board-container {
     min-width: 350px;
     max-width: 350px;
   }
 
-  form.create-note{
+  form.create-note {
     width: auto;
   }
 
-  .note{
+  .note {
     width: 250px;
   }
-
 }
 
 @media (max-width: 450px) {
@@ -551,7 +548,7 @@ form.create-note button{
   font-weight: 600;
 }
 
-.crud-table__row--sorter{
+.crud-table__row--sorter {
   display: none;
 }
 
@@ -701,4 +698,11 @@ form.create-note button{
     width: 100%;
     margin-bottom: 0;
   }
+}
+
+.draggable-container {
+  height: 50px;
+  width: 100%;
+  text-align: center;
+  line-height: 100px;
 }

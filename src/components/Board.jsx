@@ -1,8 +1,13 @@
 import React, { useState } from "react";
 import { variables } from "../Variables";
-import { makeDeleteRequest, makePatchRequest } from "../DatabaseRequests";
+import {
+  makeDeleteRequest,
+  makePatchRequest,
+  makePostRequest,
+} from "../DatabaseRequests";
 import Note from "./Note";
 import { useDrop } from "react-dnd";
+import DropArea from "./DropArea";
 
 const Board = (props) => {
   const {
@@ -86,28 +91,85 @@ const Board = (props) => {
     setNeedsEdit(null);
   }
 
+  const handleDrop = (noteId, areaId) => {
+    // const note = notes.find((note) => note.id === noteId);
+    // if (note.order_number === areaId || note.order_number - 1 === areaId) {
+    //   return;
+    // }
+    console.log(
+      `Dropped note with ID ${noteId} onto board ${title.toLowerCase()}`
+    );
+    setNotes((prevNotes) => {
+      // Find the index of the dropped note
+      const droppedNoteIndex = prevNotes.findIndex(
+        (note) => note.id === noteId
+      );
+
+      // Create a copy of the notes array to avoid mutating the original state
+      const updatedNotes = [...prevNotes];
+
+      // Find the category of the dropped note
+      const droppedNoteCategory = title.toLowerCase();
+
+      // Check if the dropped note is within the same board
+      // if (droppedNoteCategory === title.toLowerCase()) {
+      // Update the order_number of the dropped note
+      updatedNotes[droppedNoteIndex].order_number = areaId + 0.5;
+      updatedNotes[droppedNoteIndex].category = droppedNoteCategory;
+
+      // Update the order_number of subsequent notes
+      let order = 1;
+      updatedNotes.sort((a, b) => a.order_number - b.order_number);
+
+      console.log(
+        "Updated notes1:",
+        updatedNotes.map((note) => note.order_number)
+      );
+
+      for (let i = 0; i < updatedNotes.length; i++) {
+        if (updatedNotes[i].category === droppedNoteCategory) {
+          updatedNotes[i].order_number = order;
+          order++;
+        }
+      }
+
+      // Update the state with the new order_numbers
+      console.log(
+        "Updated notes:",
+        updatedNotes.map((note) => note.order_number)
+      );
+
+      const URL = variables.API_URL + "editOrders";
+      makePostRequest(URL, updatedNotes);
+      return updatedNotes;
+      // }
+    });
+  };
+
   return (
-    <div ref={drop}>
+    <div>
       <h2>{title}</h2>
       <div className="board-container" style={{ backgroundColor: boardColor }}>
-        <div className="draggable-container"></div>
-        {notes.map((note) => (
-          <>
-            <Note
-              key={note.id}
-              id={note.id}
-              title={note.title}
-              content={note.content}
-              color={note.color}
-              category={note.category}
-              needsEdit={needsEdit === note.id}
-              onDelete={deleteNote}
-              onEdit={enableEdit}
-              onSave={editNote}
-            />
-            <div className="draggable-container"></div>
-          </>
-        ))}
+        <DropArea area_id={0} onDrop={handleDrop} />
+        {notes
+          .sort((a, b) => a.order_number - b.order_number)
+          .map((note) => (
+            <React.Fragment key={note.id}>
+              <Note
+                id={note.id}
+                title={note.title}
+                content={note.content}
+                color={note.color}
+                category={note.category}
+                order_number={note.order_number}
+                needsEdit={needsEdit === note.id}
+                onDelete={deleteNote}
+                onEdit={enableEdit}
+                onSave={editNote}
+              />
+              <DropArea area_id={note.order_number} onDrop={handleDrop} />
+            </React.Fragment>
+          ))}
       </div>
     </div>
   );
