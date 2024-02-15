@@ -13,6 +13,7 @@ const DropArea = ({ area_id, onDrop, fullHeight }) => {
   });
 
   const containerStyle = {
+    height: isOver ? "100px" : "35px",
     flex: fullHeight ? "1" : "none", // Use flex 1 if fullHeight, otherwise use 'none'
   };
 

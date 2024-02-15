@@ -125,7 +125,7 @@ const Board = (props) => {
       <h2>{title}</h2>
       <div className="board-container" style={{ backgroundColor: boardColor }}>
         <DropArea
-          area_id={notes.length + 1}
+          area_id={0}
           onDrop={handleDrop}
           fullHeight={notes.length === 0}
         />
