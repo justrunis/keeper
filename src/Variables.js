@@ -1,5 +1,3 @@
-console.log("process.env.PUBLIC_URL", process.env);
-
 export const variables = {
   API_URL: process.env.REACT_APP_BACKEND_URL, // URL of the backend
   MAIN_COLOR: "#ffd966",
